@@ -7,8 +7,9 @@ describe Square do
       expect(square.occupied?).to be(false)
     end
     
-    it "returns true when negated" do
-      expect(!square.occupied?).to be(true)
+    it "returns true when occupied" do
+      square = Square.new(:white, :piece)
+      expect(square.occupied?).to be(true)
     end
   end
 end
