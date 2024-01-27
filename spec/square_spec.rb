@@ -1,9 +1,9 @@
 require './lib/square'
 
 describe Square do
-  square = Square.new(:white)
   describe "#occupied?" do
     it "returns false when unoccupied" do
+      square = Square.new(:white)
       expect(square.occupied?).to be(false)
     end
     
