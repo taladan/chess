@@ -1,12 +1,12 @@
 class Square
-  attr_reader :color, :current_piece
+  attr_reader :color, :piece
   
-  def initialize(color, current_piece=nil)
+  def initialize(color, piece=nil)
     @color = color
-    @current_piece = current_piece
+    @piece = piece
   end
   
   def occupied?
-    @current_piece != nil
+    !@piece.nil?
   end
 end
