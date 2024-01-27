@@ -1,4 +1,4 @@
-# rchess
+# chess
 
 The game of Kings, at the commandline.
 
