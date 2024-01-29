@@ -7,7 +7,7 @@ require_relative 'square'
 class Board
   def initialize
     # array of square objects representing the chess board
-    @squares_array = initialize_squares
+    @squares = initialize_squares
   end
 
   # Return a square object at a given location
@@ -15,7 +15,7 @@ class Board
     rank_letter, file_number = square_name.to_s.downcase.chars
     rank_index = ("a".."h").to_a.reverse.index(rank_letter)
     file_index = file_number.to_i - 1
-    @squares_array[rank_index][file_index]
+    @squares[rank_index][file_index]
   end
 
   private
