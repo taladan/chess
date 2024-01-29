@@ -24,29 +24,25 @@ class Board
   # for a chess board, the top left square from the white position (h1)
   # is always white.  Chess boards alternate white/black/white/black.
   #  The following rules apply:
-  #  - If the row index is even and the cell index is odd, that will always be
-  #    a white  square.
-  #  - If a row index is even and a cell index is even, that will always
-  #    be a black square
-  #  - If a row index is odd and a cell index is even, that will always be a
-  #    black square
-  #  - if a row index is odd and a cell index is odd, that will always be a
-  #    white square
+  #  - rank index even && file index even - black square.
+  #  - rank index even && file index odd - white  square.
+  #  - rank index odd && file index even - black square.
+  #  - rank index odd && file index odd - white  square.
   def initialize_squares
     array = Array.new(8) {Array.new(8)}
-    array.each_with_index do |row, row_index|
-      row.each_with_index do |cell, cell_index|
-        if row_index.even?
-          if cell_index.even?
-            array[row_index][cell_index] = Square.new(:white)
-          else
-            array[row_index][cell_index] = Square.new(:black)
+    array.each_with_index do |rank, rank_index|
+      rank.each_index do |file_index|
+        if rank_index.even? # Even rank index
+          if file_index.even? # Even file index
+            array[rank_index][file_index] = Square.new(:white)
+          else # Odd file index
+            array[rank_index][file_index] = Square.new(:black)
           end
-        else
-          if cell_index.odd?
-            array[row_index][cell_index] = Square.new(:white)
-          else
-            array[row_index][cell_index] = Square.new(:black)
+        else # Odd rank index
+          if file_index.odd? # Odd file index
+            array[rank_index][file_index] = Square.new(:white)
+          else # Even file index
+            array[rank_index][file_index] = Square.new(:black)
           end
         end
       end
