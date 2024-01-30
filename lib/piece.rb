@@ -9,6 +9,10 @@ class Piece
     @color = color
     @name = name
     @current_square = :tray
-    @possible_moves = []
+    @possible_moves = get_moveset
+  end
+  
+  def get_moveset
+    return []
   end
 end
