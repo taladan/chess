@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './lib/board'
+require 'board'
 
 describe Board do
   describe "#get" do
