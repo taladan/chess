@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 # parent class for chess pieces
+# Methods:
+# #possible_moves - return array of possible moves based on piece movement
+#                   algorithm
 class Piece
-  attr_reader :color, :name, :possible_moves
+  attr_reader :color
   attr_accessor :current_square
 
-  def initialize(color, name)
+  def initialize(color)
     @color = color
-    @name = name
     @current_square = :tray
-    @possible_moves = get_moveset
   end
-  
-  def get_moveset
-    return []
+
+  # return array of possible moves
+  def possible_moves
+    []
   end
 end
