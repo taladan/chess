@@ -2,6 +2,7 @@
 
 require "piece"
 
+# Knight chess piece
 class Knight < Piece
 
   def possible_moves
