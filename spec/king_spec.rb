@@ -13,7 +13,7 @@ describe King do
   describe '#possible_moves' do
     it 'returns the expected array' do
       piece = King.new(:black)
-      expected = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
+      expected = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
       possible_moves = piece.possible_moves
       expect(possible_moves).to eq(expected)
     end
