@@ -5,7 +5,7 @@ require_relative 'piece'
 # Still need to make a spec for this class
 # rook chess piece
 class Rook < Piece
-  
+
   # return array of possible moves
   def possible_moves
     # return array of moves
