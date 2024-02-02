@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rook'
+require './lib/pieces/rook.rb'
 
 describe Rook do
   describe '#possible_moves' do

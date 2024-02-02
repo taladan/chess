@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'piece'
+require_relative './piece.rb'
 
 # Queen chess piece
 class Queen < Piece

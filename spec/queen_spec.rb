@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'queen'
+require './lib/pieces/queen.rb'
 
 describe Queen do
   describe '#possible_moves' do

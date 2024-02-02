@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'pawn'
+require './lib/pieces/pawn.rb'
 
 describe Pawn do
   describe '#possible_moves' do

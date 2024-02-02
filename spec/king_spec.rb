@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'king'
+require './lib/pieces/king.rb'
 
 describe King do
   describe '#possible_moves' do

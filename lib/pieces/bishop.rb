@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'piece'
+require_relative './piece.rb'
 
 # Bishop chess piece
 class Bishop < Piece

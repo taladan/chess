@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'bishop'
+require './lib/pieces/bishop.rb'
 
 describe Bishop do
   describe '#possible_moves' do

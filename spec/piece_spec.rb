@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'piece'
+require './lib/pieces/piece.rb'
 
 describe Piece do
   describe '#color' do
