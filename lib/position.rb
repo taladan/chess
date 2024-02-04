@@ -10,6 +10,15 @@ class Position
     @y = ('a'..'h').to_a.index(@file)
   end
 
+  # equivalent positions
+  def ==(other)
+    self.class == other.class &&
+      @x == other.x &&
+      @y == other.y &&
+      file_and_rank == other.file_and_rank
+  end
+
+
   # xy
   def xy
     [x, y]

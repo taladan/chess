@@ -30,4 +30,12 @@ describe Position do
       expect(position.relative_postion(up:1).file_and_rank).to eq(:b6)
     end
   end
+  
+  describe '#==' do
+    it 'equals an object with identical data' do
+      position1 = Position.new(:a1)
+      position2 = Position.new(:a1)
+      expect(position1).to eq(position2)
+    end
+  end
 end
