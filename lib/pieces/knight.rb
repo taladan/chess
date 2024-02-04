@@ -4,8 +4,16 @@ require_relative './piece.rb'
 
 # Knight chess piece
 class Knight < Piece
-
   def possible_moves
-    [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]]
+    [
+      { up: 1, left: 2 },
+      { up: 2, right: 1 },
+      { up: 1, left: 2 },
+      { up: 2, right: 1 },
+      { down: 1, left: 2 },
+      { down: 2, right: 1 },
+      { down: 1, left: 2 },
+      { down: 2, right: 1 }
+    ]
   end
 end

@@ -6,6 +6,15 @@ require_relative './piece.rb'
 class King < Piece
 
   def possible_moves 
-    [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
+    [
+      {up: 1},
+      {left: 1},
+      {right: 1},
+      {down: 1},
+      {up: 1, left: 1},
+      {up:1, right: 1},
+      {down: 1, left: 1},
+      {down:1, right: 1},
+    ]
   end
 end

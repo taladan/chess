@@ -21,17 +21,35 @@ class Pawn < Piece
 
   def white_moveset
     if @already_moved
-      [[0, 1], [1, 1], [-1, 1]]
+      [
+        { up: 1 },
+        { up: 1, left: 1 },
+        { up: 1, right: 1 },
+      ]
     else
-      [[0, 1], [0, 2], [1, 1], [-1, 1]]
+      [
+        { up: 1 },
+        { up: 2 },
+        { up: 1, left: 1 },
+        { up: 1, right: 1 },
+      ]
     end
   end
 
   def black_moveset
     if @already_moved
-      [[0, -1], [1, -1], [-1, -1]]
+      [
+        { down: 1 },
+        { down: 1, left: 1 },
+        { down: 1, right: 1 },
+      ]
     else
-      [[0, -1], [0, -2], [1, -1], [-1, -1]]
+      [
+        { down: 1 },
+        { down: 2 },
+        { down: 1, left: 1 },
+        { down: 1, right: 1 },
+      ]
     end
   end
 end

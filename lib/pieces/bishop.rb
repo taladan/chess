@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 require_relative './piece.rb'
+require 'pry-byebug'
 
 # Bishop chess piece
 class Bishop < Piece
   def possible_moves
-    [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [1, -1],
-     [2, -2], [3, -3], [4, -4], [5, -5], [6, -6], [7, -7], [8, -8], [-1, 1],
-     [-2, 2], [-3, 3], [-4, 4], [-5, 5], [-6, 6], [-7, 7], [-8, 8], [-1, -1],
-     [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7], [-8, -8]]
+    moves = []
+    (1..8).to_a.each do |spaces_moved|
+      moves.push({up: spaces_moved, left: spaces_moved})
+      moves.push({down: spaces_moved, left: spaces_moved})
+      moves.push({up: spaces_moved, right: spaces_moved})
+      moves.push({down: spaces_moved, right: spaces_moved})
+    end
+    moves
   end
 end
