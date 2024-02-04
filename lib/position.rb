@@ -18,7 +18,6 @@ class Position
       file_and_rank == other.file_and_rank
   end
 
-
   # xy
   def xy
     [x, y]
