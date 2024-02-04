@@ -6,11 +6,14 @@
 # - can tell if it is occupied
 class Square
   attr_reader :color
-  attr_accessor :piece
+  attr_accessor :piece, :rank, :file, :position
 
   def initialize(color, piece=nil)
     @color = color
     @piece = piece
+    @position = nil
+    @rank = nil
+    @file = nil
   end
 
   def occupied?

@@ -3,6 +3,7 @@
 require 'pry-byebug'
 
 require_relative 'square'
+require_relative "position"
 require_relative './pieces/pawn.rb'
 require_relative './pieces/rook.rb'
 require_relative './pieces/knight.rb'
@@ -18,6 +19,7 @@ class Board
   def initialize
     # array of square objects representing the chess board
     @squares = initialize_squares
+    initialize_positions
     initialize_pieces
   end
 
@@ -39,20 +41,21 @@ class Board
 
     # get piece
     piece = from_square.piece
-    
-    can_move?(piece, to_square)
+
+    # valid_move?(piece, to_square)
+    # Move validation goes here
 
     # move piece
     to_square.piece = piece
     piece.current_square = to_square_name
+    from_square.piece = nil
   end
 
   private
+  
+  # handle validation of moves
+  def valid_move?(piece, to_square)
 
-  # set up board then set up pieces
-  def initialize_board
-    initialize_squares
-    initialize_pieces
   end
 
   # populate array with square objects
@@ -80,10 +83,21 @@ class Board
             array[rank_index][file_index] = Square.new(:black)
           end
         end
+        array[rank_index][file_index].rank = rank_index
+        array[rank_index][file_index].file = file_index
       end
     end
   end
 
+  # iterate through squares and create position objects for each
+  def initialize_positions
+    position_names = ("a".."h").to_a.each do |file|
+      (1..8).each do |rank|
+        name = (file + rank.to_s).to_sym
+        get(name).position = Position.new(name)
+      end
+    end
+  end
   # Initialize Pieces on the board for play.
   def initialize_pieces
     populate_rooks
