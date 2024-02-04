@@ -17,4 +17,8 @@ class Piece
   def possible_moves
     []
   end
+  
+  def is_pawn?
+    self.class == Pawn
+  end
 end
