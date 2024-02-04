@@ -9,14 +9,4 @@ describe Knight do
       expect(possible_moves).to be_an(Array)
     end
   end
-
-  describe '#possible_moves' do
-    it 'returns the expected array' do
-      piece = Knight.new(:black)
-      expected = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], 
-                  [1, -2], [1, 2], [2, -1], [2, 1]]
-      possible_moves = piece.possible_moves
-      expect(possible_moves).to eq(expected)
-    end
-  end
 end

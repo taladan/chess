@@ -18,15 +18,16 @@ describe Position do
   end
 
   describe '#relative_position' do
-    it 'returns a symbol that consists of a single character and a single number' do
-      position = Position.new(:a1)
-      target = position.relative_postion(name: :a1, up:1)
-      expect(target).to be_a(Symbol)
-      file, rank = target.to_s.split('', 2)
-      expect(file).to be_a(String)
-      expect(file.length).to be(1)
-      expect(rank.to_i).to be_a(Integer)
-      expect(rank.length).to be(1)
+    it 'returns a position object' do
+      position = Position.new(:b5)
+      expect(position.relative_postion(up:1)).to be_a(Position)
+    end
+  end
+  
+  describe '#relative_position' do
+    it 'has a file_and_rank of :b6' do
+      position = Position.new(:b5)
+      expect(position.relative_postion(up:1).file_and_rank).to eq(:b6)
     end
   end
 end
