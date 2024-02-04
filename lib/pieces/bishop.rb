@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative './piece.rb'
-require 'pry-byebug'
 
 # Bishop chess piece
 class Bishop < Piece

@@ -3,6 +3,7 @@
 # Position is responsible for dealing with coordinates
 class Position
   attr_reader :x, :y, :rank, :file
+
   def initialize(square_name)
     @file, @rank = square_name.to_s.downcase.split('', 2)
     @x = (1..8).to_a.index(@rank.to_i)
@@ -18,7 +19,7 @@ class Position
   def yx
     [y, x]
   end
-  
+
   def file_and_rank
     (@file + @rank.to_s).to_sym
   end

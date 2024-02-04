@@ -98,6 +98,7 @@ class Board
       end
     end
   end
+
   # Initialize Pieces on the board for play.
   def initialize_pieces
     populate_rooks
