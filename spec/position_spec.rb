@@ -38,4 +38,12 @@ describe Position do
       expect(position1).to eq(position2)
     end
   end
+  
+  describe '#==' do
+    it 'does not equan an object with different data' do
+      position1 = Position.new(:b2)
+      position2 = Position.new(:h3)
+      expect(position1).not_to eq(position2)
+    end
+  end
 end

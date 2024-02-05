@@ -40,7 +40,7 @@ class Position
   #   - :down
   #   - :left
   #   - :right
-  def relative_postion(**direction)
+  def relative_position(**direction)
     direction.each_key do |key|
       case key
       # deal with name
