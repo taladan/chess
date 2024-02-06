@@ -34,36 +34,31 @@ class Position
 
   # calculate relative position
   # expects:
-  # - :name
   # - One or more of:
   #   - :up
   #   - :down
   #   - :left
   #   - :right
   def relative_position(**direction)
-    direction.each_key do |key|
+    #starting values
+    @target_rank = @rank
+    @target_file = @file
+    
+    # iterate all directions and perform calculation
+    direction.each do |key, amount|
       case key
-      # deal with name
-      when :name
-        :name # possibly do something later here
-      # up: 2 = @rank + 2
       when :up
-        @target_rank = @rank.to_i + direction[:up]
-        @target_file = @file
-      # down: 2 = @rank - 2
+        @target_rank = @rank.to_i + amount.to_i
       when :down
-        @target_rank = @rank.to_i - direction[:down]
-        @target_file = @file
-      # left: 2 = @file + 2 = (@file.ord + 2).chr
+        @target_rank = @rank.to_i - amount.to_i
       when :left
-        @target_file = (@file.ord - direction[:left]).chr
-        @target_rank = @rank
-      # right: 2 = @file - 2 = (@file.ord - 2).chr
+        @target_file = (@file.ord - amount.to_i).chr
       when :right
-        @target_file = (@file.ord + direction[:right]).chr
-        @target_rank = @rank
+        @target_file = (@file.ord + amount.to_i).chr
       end
     end
+    
+    # return a new position object of the calculated position
     Position.new((@target_file + @target_rank.to_s).to_sym)
   end
 end
