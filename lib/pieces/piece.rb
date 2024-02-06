@@ -11,6 +11,7 @@ class Piece
   def initialize(color)
     @color = color
     @current_square = :tray
+    @already_moved = false
   end
 
   # return array of possible moves

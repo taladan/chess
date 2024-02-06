@@ -6,11 +6,6 @@ require_relative './piece.rb'
 class Pawn < Piece
   attr_accessor :already_moved
 
-  def initialize(color)
-    super
-    @already_moved = false
-  end
-
   # Pawns can only move 'forward' from starting position, so :white has a
   # different moveset from :black
   def possible_moves
