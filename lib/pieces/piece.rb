@@ -28,6 +28,6 @@ class Piece
   end
 
   def is_pawn?
-    self.class == Pawn
+    instance_of?(Pawn)
   end
 end
