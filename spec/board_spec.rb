@@ -15,6 +15,18 @@ describe Board do
     end
   end
 
+  describe "#get_piece" do
+    it "returns a piece object when passed a square that has a piece in it" do
+      piece = Board.new.get_piece(:a1)
+      expect(piece).to be_a(Piece)
+    end
+
+    it "returns nil when asked to retrieve a piece from a square that is empty" do
+      piece = Board.new.get_piece(:a5)
+      expect(piece).to be(nil)
+    end
+  end
+
   describe "#on_board?" do
     it "returns true when a position known to be on the board is given" do
       board = Board.new

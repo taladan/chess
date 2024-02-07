@@ -32,6 +32,10 @@ class Board
     @squares[rank_index][file_index]
   end
 
+  def get_piece(square_name)
+    get(square_name).piece
+  end
+
   # move piece from square to square
   # expects string or symbol :a1..:h8
   # Right now I am not going to worry about validation of 'is this a square on
