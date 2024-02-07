@@ -10,12 +10,16 @@ class Position
     @y = ('a'..'h').to_a.index(@file)
   end
 
+  # string
+  def to_s
+    to_sym.to_s
+  end
   # equivalent positions
   def ==(other)
     self.class == other.class &&
       @x == other.x &&
       @y == other.y &&
-      file_and_rank == other.file_and_rank
+      to_sym == other.to_sym
   end
 
   # xy
@@ -28,7 +32,7 @@ class Position
     [y, x]
   end
 
-  def file_and_rank
+  def to_sym
     (@file + @rank.to_s).to_sym
   end
 
@@ -43,7 +47,7 @@ class Position
     #starting values
     @target_rank = @rank
     @target_file = @file
-    
+
     # iterate all directions and perform calculation
     direction.each do |key, amount|
       case key
@@ -57,7 +61,7 @@ class Position
         @target_file = (@file.ord + amount.to_i).chr
       end
     end
-    
+
     # return a new position object of the calculated position
     Position.new((@target_file + @target_rank.to_s).to_sym)
   end

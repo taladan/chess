@@ -20,17 +20,17 @@ describe Position do
   describe '#relative_position' do
     it 'returns a position object' do
       position = Position.new(:b5)
-      expect(position.relative_postion(up:1)).to be_a(Position)
+      expect(position.relative_position(up:1)).to be_a(Position)
     end
   end
-  
+
   describe '#relative_position' do
-    it 'has a file_and_rank of :b6' do
+    it 'has a to_sym of :b6' do
       position = Position.new(:b5)
-      expect(position.relative_postion(up:1).file_and_rank).to eq(:b6)
+      expect(position.relative_position(up:1).to_sym).to eq(:b6)
     end
   end
-  
+
   describe '#==' do
     it 'equals an object with identical data' do
       position1 = Position.new(:a1)
@@ -38,12 +38,20 @@ describe Position do
       expect(position1).to eq(position2)
     end
   end
-  
+
   describe '#==' do
     it 'does not equan an object with different data' do
       position1 = Position.new(:b2)
       position2 = Position.new(:h3)
       expect(position1).not_to eq(position2)
+    end
+  end
+
+  describe '#to_s' do
+    it 'returns a string representation of the positions symbol' do
+      pos = Position.new(:a1)
+      str = "a1"
+      expect(pos.to_s).to eq(str)
     end
   end
 end
