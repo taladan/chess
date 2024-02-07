@@ -4,7 +4,7 @@ require 'pry-byebug'
 
 require_relative 'square'
 require_relative "position"
-require_relative './pieces/pawn.rb'
+require_relative './pieces/pawn'
 require_relative './pieces/rook.rb'
 require_relative './pieces/knight.rb'
 require_relative './pieces/bishop.rb'
@@ -12,7 +12,7 @@ require_relative './pieces/queen.rb'
 require_relative './pieces/king.rb'
 
 # responsibilities include:
-# - Initializing square objects into an accessible data 
+# - Initializing square objects into an accessible data
 #   structures for game board
 # - Square handling
 class Board
@@ -34,6 +34,9 @@ class Board
 
   # move piece from square to square
   # expects string or symbol :a1..:h8
+  # Right now I am not going to worry about validation of 'is this a square on
+  # the board?' type issues - that's what valid_move? is going to take care of.
+  # This function is going to be doing too much to begin with.
   def move(from_square_name, to_square_name)
     # get squares
     from_square = get(from_square_name)
@@ -45,18 +48,39 @@ class Board
     # valid_move?(piece, to_square)
     # Move validation goes here
 
+
     # move piece
     to_square.piece = piece
     piece.current_square = to_square_name
     from_square.piece = nil
   end
 
-  private
-  
-  # handle validation of moves
-  def valid_move?(piece, to_square)
-
+  # is the requested move in the selected piece's possible_moves
+  # Can the square be occupied
+  # does the move create a threat?
+  def valid_move?(piece, from_square, to_square)
+    binding.pry
+    destination_in_piece_moves?(piece, to_square)
+    can_occupy?(piece, to_square)
+    !creates_threat?(piece, from_square, to_square)
   end
+
+  # receive position object & evaluate true if on board, false if off
+  def on_board?(position)
+    bd = []
+    ('a'..'h').to_a.each do |file|
+      (1..8).to_a.each do |rank|
+        bd.push((file + rank.to_s).to_sym)
+      end
+    end
+
+    bd.include?(position.to_sym)
+  end
+
+
+
+  private
+
 
   # populate array with square objects
   # for a chess board, the top left square from the white position (h1)
@@ -91,7 +115,7 @@ class Board
 
   # iterate through squares and create position objects for each
   def initialize_positions
-    position_names = ("a".."h").to_a.each do |file|
+    ('a'..'h').to_a.each do |file|
       (1..8).each do |rank|
         name = (file + rank.to_s).to_sym
         get(name).position = Position.new(name)

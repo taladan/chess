@@ -14,4 +14,20 @@ describe Board do
       expect(square).to be_a(Square)
     end
   end
+
+  describe "#on_board?" do
+    it "returns true when a position known to be on the board is given" do
+      board = Board.new
+      pos = :a1
+      expect(board.on_board?(pos)).to be(true)
+    end
+  end
+
+  describe "#on_board?" do
+    it "returns false when a position known to be off the board is given" do
+      board = Board.new
+      pos = :a12
+      expect(board.on_board?(pos)).to be(false)
+    end
+  end
 end
