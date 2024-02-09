@@ -19,6 +19,7 @@ class Board
   def initialize
     # array of square objects representing the chess board
     @squares = initialize_squares
+    @piece_handler = Piece.new
     initialize_positions
     initialize_pieces
   end
@@ -32,6 +33,8 @@ class Board
     @squares[rank_index][file_index]
   end
 
+  # Return a piece object at a given location
+  # expectes string or symbol :a1..:h8
   def get_piece(square_name)
     get(square_name).piece
   end
@@ -51,7 +54,6 @@ class Board
 
     # valid_move?(piece, to_square)
     # Move validation goes here
-
 
     # move piece
     to_square.piece = piece
@@ -82,9 +84,53 @@ class Board
   end
 
 
+  # TODO: Write tests for put/get
+
+
+
+  # place piece on specific square
+  # This is a destructive method - it overwrites any piece on the square
+  # expects:
+  # - Piece object or string or symbol of piece name
+  # - square name in string or symbol
+  # - (optional) color of piece (typically :white or :black)
+  #   Note: If you do not include a color and are using this to create a piece
+  #   instead of placing an existing piece it will be colorless and
+  #   render incorrectly.
+  def put(piece_name, square_name, color = nil)
+    if piece_name.is_a?(Piece)
+      piece = piece_name
+    else
+      sanitized_piece_name = piece_name.to_s.downcase.to_sym
+      piece = @piece_handler.pieces[sanitized_piece_name].new(color)
+    end
+    piece.current_square = square_name.to_sym
+    square = get(square_name)
+    square.piece = piece
+  end
+
+  # Remove piece from square
+  # this is a destructive method - it overwrites any data that exists on
+  # piece and square
+  # returns piece object
+  def remove_piece_from(square_name)
+    # set square
+    square = get(square_name)
+
+    # load piece
+    piece = square.piece
+
+    # clear piece
+    piece.current_square = :tray
+
+    # clear square
+    square.piece = nil
+
+    # return piece
+    piece
+  end
 
   private
-
 
   # populate array with square objects
   # for a chess board, the top left square from the white position (h1)

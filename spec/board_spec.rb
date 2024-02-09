@@ -27,6 +27,14 @@ describe Board do
     end
   end
 
+  describe '#put' do
+    it "puts a new piece on the board when passed a symbol" do
+      board = Board.new
+      board.put(:queen, :e5, :black)
+      expect(board.get(:e5).piece).to be_a(Queen)
+    end
+  end
+
   describe "#on_board?" do
     it "returns true when a position known to be on the board is given" do
       board = Board.new

@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+# require all piece files
+
+require_relative './pawn'
+require_relative './rook'
+require_relative './knight'
+require_relative './bishop'
+require_relative './queen'
+require_relative './king'
+
 # parent class for chess pieces
 # Methods:
 # #possible_moves - return array of possible moves based on piece movement
