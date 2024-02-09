@@ -11,13 +11,9 @@ require_relative './pieces/bishop.rb'
 require_relative './pieces/queen.rb'
 require_relative './pieces/king.rb'
 
-# responsibilities include:
-# - Initializing square objects into an accessible data
-#   structures for game board
-# - Square handling
+# This class represents a Chess Board
 class Board
   def initialize
-    # array of square objects representing the chess board
     @squares = initialize_squares
     @piece_handler = Piece.new
     initialize_positions
@@ -25,8 +21,8 @@ class Board
   end
 
   # Return a square object at a given location
-  # expects string or symbol :a1..:h8
   def get(square_name)
+    # expects +square_name+ - string or symbol
     rank_letter, file_number = square_name.to_s.downcase.chars
     rank_index = ('a'..'h').to_a.reverse.index(rank_letter)
     file_index = file_number.to_i - 1
@@ -34,22 +30,23 @@ class Board
   end
 
   # Return a piece object at a given location
-  # expectes string or symbol :a1..:h8
   def get_piece(square_name)
+    # expects +square_name+ - string or symbol :a1..:h8
     get(square_name).piece
   end
 
-  # move piece from square to square
-  # expects string or symbol :a1..:h8
-  # Right now I am not going to worry about validation of 'is this a square on
-  # the board?' type issues - that's what valid_move? is going to take care of.
-  # This function is going to be doing too much to begin with.
+  # move piece from square to squar
+  # TODO: finish this
   def move(from_square_name, to_square_name)
-    # get squares
+    # TODO: finish this when Move is functioning
+    # expects string or symbol :a1..:h8
+    # Right now I am not going to worry about validation of 'is this a square on
+    # the board?' type issues - that's what valid_move? is going to take care of.
+    # This function is going to be doing too much to begin with.
+
     from_square = get(from_square_name)
     to_square = get(to_square_name)
 
-    # get piece
     piece = from_square.piece
 
     # valid_move?(piece, to_square)
@@ -64,8 +61,8 @@ class Board
   # is the requested move in the selected piece's possible_moves
   # Can the square be occupied
   # does the move create a threat?
+  # TODO: Pull this out and modify when Move is in
   def valid_move?(piece, from_square, to_square)
-    binding.pry
     destination_in_piece_moves?(piece, to_square)
     can_occupy?(piece, to_square)
     !creates_threat?(piece, from_square, to_square)
@@ -83,26 +80,22 @@ class Board
     bd.include?(position.to_sym)
   end
 
-
-  # TODO: Write tests for put/get
-
-
-
   # place piece on specific square
-  # This is a destructive method - it overwrites any piece on the square
-  # expects:
-  # - Piece object or string or symbol of piece name
-  # - square name in string or symbol
-  # - (optional) color of piece (typically :white or :black)
-  #   Note: If you do not include a color and are using this to create a piece
-  #   instead of placing an existing piece it will be colorless and
-  #   render incorrectly.
   def put(piece_name, square_name, color = nil)
+    # This is a destructive method - it overwrites any piece on the square
+    # expects:
+    # - +piece+  - Piece object or string or symbol of piece name
+    #   using string or symbol creates a new piece on the square
+    # - +square+ - string or symbol
+    # - +color+ (optional) - :white or :black
+    #   Note: If you do not include a color and are using this to create a piece
+    #   instead of placing an existing piece it will be colorless and
+    #   render incorrectly.
     if piece_name.is_a?(Piece)
       piece = piece_name
     else
       sanitized_piece_name = piece_name.to_s.downcase.to_sym
-      piece = @piece_handler.pieces[sanitized_piece_name].new(color)
+      piece = @piece_handler.create_piece(sanitized_piece_name, color)
     end
     piece.current_square = square_name.to_sym
     square = get(square_name)
@@ -110,37 +103,34 @@ class Board
   end
 
   # Remove piece from square
-  # this is a destructive method - it overwrites any data that exists on
-  # piece and square
-  # returns piece object
   def remove_piece_from(square_name)
-    # set square
-    square = get(square_name)
+    # this is a destructive method - it overwrites any data that exists on
+    # Piece and Square
+    # Expects:
+    # - +square_name+ - string or symbol
+    # returns piece object
+    square = get(square_name.to_sym)
 
-    # load piece
     piece = square.piece
 
-    # clear piece
     piece.current_square = :tray
 
-    # clear square
     square.piece = nil
 
-    # return piece
     piece
   end
 
   private
 
   # populate array with square objects
-  # for a chess board, the top left square from the white position (h1)
-  # is always white.  Chess boards alternate white/black/white/black.
-  #  The following rules apply:
-  #  - rank index even && file index even - black square.
-  #  - rank index even && file index odd - white  square.
-  #  - rank index odd && file index even - black square.
-  #  - rank index odd && file index odd - white  square.
   def initialize_squares
+    # for a chess board, the top left square from the white position (h1)
+    # is always white.  Chess boards alternate white/black/white/black.
+    #  The following rules apply:
+    #  - rank index even && file index even - black square.
+    #  - rank index even && file index odd - white  square.
+    #  - rank index odd && file index even - black square.
+    #  - rank index odd && file index odd - white  square.
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |rank, rank_index|
       rank.each_index do |file_index|
@@ -163,7 +153,7 @@ class Board
     end
   end
 
-  # iterate through squares and create position objects for each
+  # iterate through squares and return position object for each
   def initialize_positions
     ('a'..'h').to_a.each do |file|
       (1..8).each do |rank|
@@ -173,7 +163,7 @@ class Board
     end
   end
 
-  # Initialize Pieces on the board for play.
+  # initialize Pieces on the board for play
   def initialize_pieces
     populate_rooks
     populate_knights
@@ -183,7 +173,6 @@ class Board
     populate_pawns
   end
 
-  # populate rooks
   def populate_rooks
     [:a1, :h1].each do |square_name|
       piece = Rook.new(:white)
@@ -200,7 +189,6 @@ class Board
     end
   end
 
-  # populate knights
   def populate_knights
     [:b1, :g1].each do |square_name|
       piece = Knight.new(:white)
@@ -217,7 +205,6 @@ class Board
     end
   end
 
-  # populate bishops
   def populate_bishops
     [:c1, :f1].each do |square_name|
       piece = Bishop.new(:white)
@@ -234,7 +221,6 @@ class Board
     end
   end
 
-  # populate queens
   def populate_queens
     white_queen = Queen.new(:white)
     white_queen.current_square = :d1
@@ -247,7 +233,6 @@ class Board
     bq_square.piece = black_queen
   end
 
-  # populate kings
   def populate_kings
     white_king = King.new(:white)
     white_king.current_square = :e1
@@ -260,7 +245,6 @@ class Board
     bk_square.piece = black_king
   end
 
-  # populate pawns
   def populate_pawns
     rank2 = ('a'..'h').to_a.map { |file| (file + 2.to_s).to_sym }
     rank7 = ('a'..'h').to_a.map { |file| (file + 7.to_s).to_sym }
