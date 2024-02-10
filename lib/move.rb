@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-# work with positions only -  pull squares only when necessary
 # Move - encompasses the logic of movement
 class Move
+  attr_reader :origin, :destination
+
   def initialize(board, piece, destination)
     @board = board
     @piece = piece
@@ -10,8 +11,11 @@ class Move
     @destination = convert_to_position(destination)
   end
 
+  # TODO: Need to walk path of piece and check for obstacles, unless piece is a knight
+
   def valid?
-    can_move_to?(destination)
+    piece_has_square_in_possible_moves?
+    can_move_to?
     if !path_empty?
       check_pieces_in_path != piece.color
     end
@@ -47,10 +51,11 @@ class Move
   end
 
   # can the piece move to the square
-  def can_move_to?(position)
-    square = @board.get(position.to_sym)
+  def can_move_to?
+    @origin.relative_position(@destination)
+    square = @board.get(@destination.to_sym)
     if @piece.is_pawn?
-      pawn_can_move_to?(position)
+      pawn_can_move_to?
     elsif square.occupied?
       @piece.color != square.piece.color
     else
@@ -61,8 +66,8 @@ class Move
   # pawns have special movement rules
   # expects Position object
   # return true || false
-  def pawn_can_move_to?(position)
-    square = @board.get(position.to_sym)
+  def pawn_can_move_to?
+    square = @board.get(@destination.to_sym)
     if @origin.y != position.y
       square.occupied? && @piece.color != square.piece.color
     elsif square.occupied?
@@ -74,17 +79,25 @@ class Move
 
   # does this movement create a threat for either king
   def creates_threat?
+    # TODO: figure out how to run threats
     false
   end
 
-  # Check that if square is occupied, it's occupied by an enemy piece
-  # if it's empty or occupied by an enemy piece, it's occupiable
-  def can_occupy?(position)
-    square = @board.get(position.to_sym)
+  # return true if piece can occupy square, false if not
+  def can_occupy?
+    square = @board.get(@destination.to_sym)
     if square.occupied?
       square.piece.color != @piece.color
     else
       true
+    end
+  end
+
+  private
+
+  def piece_has_square_in_possible_moves?
+    @piece.possible_moves.any? do |move|
+      @origin.relative_position(**move) == @destination
     end
   end
 end
