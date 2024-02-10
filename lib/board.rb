@@ -175,14 +175,14 @@ class Board
 
   def populate_rooks
     [:a1, :h1].each do |square_name|
-      piece = Rook.new(:white)
+      piece = @piece_handler.create_piece(:rook, :white)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
     end
 
     [:a8, :h8].each do |square_name|
-      piece = Rook.new(:black)
+      piece = @piece_handler.create_piece(:rook, :black)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
@@ -191,14 +191,14 @@ class Board
 
   def populate_knights
     [:b1, :g1].each do |square_name|
-      piece = Knight.new(:white)
+      piece = @piece_handler.create_piece(:knight, :white)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
     end
 
     [:b8, :g8].each do |square_name|
-      piece = Knight.new(:black)
+      piece = @piece_handler.create_piece(:knight, :black)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
@@ -207,14 +207,14 @@ class Board
 
   def populate_bishops
     [:c1, :f1].each do |square_name|
-      piece = Bishop.new(:white)
+      piece = @piece_handler.create_piece(:bishop, :white)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
     end
 
     [:c8, :f8].each do |square_name|
-      piece = Bishop.new(:black)
+      piece = @piece_handler.create_piece(:bishop, :black)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
@@ -222,24 +222,24 @@ class Board
   end
 
   def populate_queens
-    white_queen = Queen.new(:white)
+    white_queen = @piece_handler.create_piece(:queen, :white)
     white_queen.current_square = :d1
     wq_square = get(:d1)
     wq_square.piece = white_queen
 
-    black_queen = Queen.new(:black)
+    black_queen = @piece_handler.create_piece(:queen, :black)
     black_queen.current_square = :d8
     bq_square = get(:d8)
     bq_square.piece = black_queen
   end
 
   def populate_kings
-    white_king = King.new(:white)
+    white_king = @piece_handler.create_piece(:king, :white)
     white_king.current_square = :e1
     wk_square = get(:e1)
     wk_square.piece = white_king
 
-    black_king = King.new(:black)
+    black_king = @piece_handler.create_piece(:king, :black)
     black_king.current_square = :e8
     bk_square = get(:e8)
     bk_square.piece = black_king
@@ -250,14 +250,14 @@ class Board
     rank7 = ('a'..'h').to_a.map { |file| (file + 7.to_s).to_sym }
 
     rank2.each do |square_name|
-      piece = Pawn.new(:white)
+      piece = @piece_handler.create_piece(:pawn, :white)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
     end
 
     rank7.each do |square_name|
-      piece = Pawn.new(:black)
+      piece = @piece_handler.create_piece(:pawn, :black)
       piece.current_square = square_name
       square = get(square_name)
       square.piece = piece
