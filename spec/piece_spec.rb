@@ -10,6 +10,13 @@ describe Piece do
     end
   end
 
+  describe '#create_piece' do
+    it 'returns a Pawn object when called to create a pawn' do
+      piece = Piece.new().create_piece(:pawn, :black)
+      expect(piece).to be_a(Pawn)
+    end
+  end
+
   describe '#current_square' do
     it 'returns a symbol' do
       current_square = Piece.new(:white).current_square
