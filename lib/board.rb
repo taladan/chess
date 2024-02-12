@@ -22,7 +22,8 @@ class Board
 
   # Return a square object at a given location
   def get(square_name)
-    # expects +square_name+ - string or symbol
+    # expects +square_name+ = Position obj, string, or symbol (:a1..:h8)
+    square_name = square_name.to_sym if square_name.instance_of?(Position)
     rank_letter, file_number = square_name.to_s.downcase.chars
     rank_index = ('a'..'h').to_a.reverse.index(rank_letter)
     file_index = file_number.to_i - 1
@@ -31,7 +32,7 @@ class Board
 
   # Return a piece object at a given location
   def get_piece(square_name)
-    # expects +square_name+ - string or symbol :a1..:h8
+    # expects +square_name+ = Position obj, string, or symbol (:a1..:h8)
     get(square_name).piece
   end
 
