@@ -11,50 +11,59 @@ class Move
     @destination = convert_to_position(destination)
   end
 
-  # TODO: Need to walk path of piece and check for obstacles, unless piece is a knight
-
-  def valid?
-    piece_has_square_in_possible_moves?
-    can_move_to?
-    if !path_empty?
-      check_pieces_in_path != piece.color
+  # validate clear path
+  def path_clear?
+    unless @piece.knight?
+      path = path_from_piece[0]
+      path.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
+        tmp_directions = {}
+        path.each_key { |key| tmp_directions[key] = n + 1 }
+        return @board.get_piece(@origin.relative_position(**tmp_directions)).nil?
+      end
     end
   end
 
-  # return hash of positions
-  def path
-    # iterate piece movements and pull the set of directions that
-    # lands the piece on the destination from origin
-    directions = @piece.possible_moves.any? do |move|
-      current_position = @origin.relative_position(**move)
-      @board.on_board?(current_position) &&
-        can_move_to?(current_position)
+  # validate piece movement
+  def valid?
+    piece_has_square_in_possible_moves?
+    can_move_to?
+    path_clear?
+    creates_threat_for_moving_side?
+  end
+
+  # return the path from piece that matches the movement
+  # from @origin to @destination
+  def path_from_piece
+    @piece.possible_moves.select do |move|
+      move if @origin.relative_position(**move) == @destination
     end
-    # once a set of directions is established, generate a position
-    # from each step, Collect a hash of
   end
 
   def threatens_opponent?
 
   end
 
-  def create_threat_for_moving_side?
+  def creates_threat_for_moving_side?
 
   end
 
+  private
+
+  # convert a symbol to a position
   def convert_to_position(dest)
+    # expect: +dest+ of either symbol or Position object.
     dest if dest.is_a?(Position)
 
-    if dest.is_a?(Square) || dest.is_a?(Symbol) || dest.is_a?(String)
-      @board.get(dest).position
-    end
+    @board.get(dest).position if dest.is_a?(Square) ||
+                                 dest.is_a?(Symbol) ||
+                                 dest.is_a?(String)
   end
 
-  # can the piece move to the square
+  # validate destination is valid and occupiable
   def can_move_to?
     @origin.relative_position(@destination)
     square = @board.get(@destination.to_sym)
-    if @piece.is_pawn?
+    if @piece.pawn?
       pawn_can_move_to?
     elsif square.occupied?
       @piece.color != square.piece.color
@@ -63,9 +72,7 @@ class Move
     end
   end
 
-  # pawns have special movement rules
-  # expects Position object
-  # return true || false
+  # validate special pawn movement
   def pawn_can_move_to?
     square = @board.get(@destination.to_sym)
     if @origin.y != position.y
@@ -77,13 +84,7 @@ class Move
     end
   end
 
-  # does this movement create a threat for either king
-  def creates_threat?
-    # TODO: figure out how to run threats
-    false
-  end
-
-  # return true if piece can occupy square, false if not
+  # validate that piece can occupy square
   def can_occupy?
     square = @board.get(@destination.to_sym)
     if square.occupied?
@@ -93,8 +94,7 @@ class Move
     end
   end
 
-  private
-
+  # validate destination is within piece's possible moves
   def piece_has_square_in_possible_moves?
     @piece.possible_moves.any? do |move|
       @origin.relative_position(**move) == @destination
