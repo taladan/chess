@@ -33,4 +33,12 @@ class Piece
   def pawn?
     instance_of?(Pawn)
   end
+
+  def king?
+    instance_of?(King)
+  end
+
+  def knight?
+    instance_of?(Knight)
+  end
 end
