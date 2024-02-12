@@ -30,7 +30,7 @@ class Piece
     end
   end
 
-  def is_pawn?
+  def pawn?
     instance_of?(Pawn)
   end
 end

@@ -24,17 +24,17 @@ describe Piece do
     end
   end
 
-  describe '#is_pawn?' do
+  describe '#pawn?' do
     it 'returns true when piece is a pawn' do
       require './lib/pieces/pawn.rb'
       piece = Pawn.new(:white)
-      expect(piece.is_pawn?).to be(true)
+      expect(piece.pawn?).to be(true)
     end
 
     it 'returns false when piece is not a pawn' do
       require './lib/pieces/rook.rb'
       piece = Rook.new(:black)
-      expect(piece.is_pawn?).to be(false)
+      expect(piece.pawn?).to be(false)
     end
   end
 
