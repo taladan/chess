@@ -20,6 +20,20 @@ class Board
     initialize_pieces
   end
 
+  # return flat array of all squares
+  def all_squares
+    @squares.flatten
+  end
+
+  # return Array of Pieces
+  def find_pieces_by_color(color)
+    # expects +color+ = symbol or string
+    all_squares.flat_map do |square|
+      piece = get_piece(square.position)
+      piece if piece&.color == color.to_sym
+    end.compact
+  end
+
   # Return a square object at a given location
   def get(square_name)
     # expects +square_name+ = Position obj, string, or symbol (:a1..:h8)
@@ -55,7 +69,7 @@ class Board
 
     # move piece
     to_square.piece = piece
-    piece.current_square = to_square_name
+    piece.current_square = Position.new(to_square_name)
     from_square.piece = nil
   end
 
@@ -98,7 +112,7 @@ class Board
       sanitized_piece_name = piece_name.to_s.downcase.to_sym
       piece = @piece_handler.create_piece(sanitized_piece_name, color)
     end
-    piece.current_square = square_name.to_sym
+    piece.current_square = Position.new(square_name.to_sym)
     square = get(square_name)
     square.piece = piece
   end
@@ -177,14 +191,14 @@ class Board
   def populate_rooks
     [:a1, :h1].each do |square_name|
       piece = @piece_handler.create_piece(:rook, :white)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
     [:a8, :h8].each do |square_name|
       piece = @piece_handler.create_piece(:rook, :black)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
@@ -193,14 +207,14 @@ class Board
   def populate_knights
     [:b1, :g1].each do |square_name|
       piece = @piece_handler.create_piece(:knight, :white)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
     [:b8, :g8].each do |square_name|
       piece = @piece_handler.create_piece(:knight, :black)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
@@ -209,14 +223,14 @@ class Board
   def populate_bishops
     [:c1, :f1].each do |square_name|
       piece = @piece_handler.create_piece(:bishop, :white)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
     [:c8, :f8].each do |square_name|
       piece = @piece_handler.create_piece(:bishop, :black)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
@@ -224,24 +238,24 @@ class Board
 
   def populate_queens
     white_queen = @piece_handler.create_piece(:queen, :white)
-    white_queen.current_square = :d1
+    white_queen.current_square = Position.new(:d1)
     wq_square = get(:d1)
     wq_square.piece = white_queen
 
     black_queen = @piece_handler.create_piece(:queen, :black)
-    black_queen.current_square = :d8
+    black_queen.current_square = Position.new(:d8)
     bq_square = get(:d8)
     bq_square.piece = black_queen
   end
 
   def populate_kings
     white_king = @piece_handler.create_piece(:king, :white)
-    white_king.current_square = :e1
+    white_king.current_square = Position.new(:e1)
     wk_square = get(:e1)
     wk_square.piece = white_king
 
     black_king = @piece_handler.create_piece(:king, :black)
-    black_king.current_square = :e8
+    black_king.current_square = Position.new(:e8)
     bk_square = get(:e8)
     bk_square.piece = black_king
   end
@@ -252,14 +266,14 @@ class Board
 
     rank2.each do |square_name|
       piece = @piece_handler.create_piece(:pawn, :white)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
     rank7.each do |square_name|
       piece = @piece_handler.create_piece(:pawn, :black)
-      piece.current_square = square_name
+      piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
