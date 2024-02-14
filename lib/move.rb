@@ -17,7 +17,7 @@ class Move
     path.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
       tmp_directions = {}
       path.each_key { |key| tmp_directions[key] = n + 1 }
-      return @board.get_piece(@origin.relative_position(**tmp_directions)).nil?
+      @board.get_piece(@origin.relative_position(**tmp_directions)).nil?
     end
   end
 
