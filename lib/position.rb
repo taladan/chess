@@ -47,7 +47,6 @@ class Position
     #starting values
     @target_rank = @rank
     @target_file = @file
-
     # iterate all directions and perform calculation
     direction.each do |key, amount|
       case key
