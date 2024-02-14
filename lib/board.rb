@@ -3,7 +3,7 @@
 require 'pry-byebug'
 
 require_relative 'square'
-require_relative "position"
+require_relative 'position'
 require_relative './pieces/pawn'
 require_relative './pieces/rook.rb'
 require_relative './pieces/knight.rb'
@@ -31,7 +31,7 @@ class Board
     all_squares.flat_map do |square|
       piece = get_piece(square.position)
       piece if piece&.color == color.to_sym
-    end.compact
+    end.to_a.compact
   end
 
   # Return a square object at a given location
