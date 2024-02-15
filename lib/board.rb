@@ -135,6 +135,67 @@ class Board
     piece
   end
 
+  #
+  # Pathing and threat work area
+  #
+
+  # validate clear path
+  # TODO: Refactor to work from Board
+  def path_clear?
+    path = path_from_piece[0]
+    path.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
+      tmp_directions = {}
+      path.each_key { |key| tmp_directions[key] = n + 1 }
+      @board.get_piece(@origin.relative_position(**tmp_directions)).nil?
+    end
+  end
+
+  # return the path from @piece that matches the movement
+  # from @origin to @destination
+  # TODO: Refactor to work from Board
+  def path_from_piece
+    @piece.possible_moves.select do |move|
+      move if @origin.relative_position(**move) == @destination
+    end
+  end
+
+  # return Array of opponent's pieces
+  # TODO: Refactor to work from Board
+  def opponent_pieces
+    case @piece.color
+    when :white
+      @board.find_pieces_by_color(:black)
+    when :black
+      @board.find_pieces_by_color(:white)
+    end
+  end
+
+  # TODO: Workout current issue:
+  #       Currently this function only calculates whether a square/position
+  #       is in the set of possible_moves of a piece - it doesn't actually run
+  #       the checks to see if the piece can move through its path to that spot
+  # TODO: Refactor to work from Board
+  def threatens_players_king?
+    player_king_position = @board.find_pieces_by_color(@piece.color).select do |piece|
+      piece.king?
+    end[0].current_square
+
+    opponent_pieces.any? do |piece|
+      piece.possible_moves.any? do |move|
+        test_position = piece.current_square.relative_position(**move)
+        if test_position == player_king_position
+          Move.new(@board, piece, test_position).path_clear?
+        end
+      end
+    end
+  end
+
+  # TODO: Flesh out calculating opponent threat calculation
+  # TODO: Refactor to work from Board
+  def threatens_opponents_king?
+
+  end
+
   private
 
   # populate array with square objects
