@@ -43,6 +43,24 @@ describe Board do
     end
   end
 
+  describe "#path_clear?" do
+    it "returns true when path between the origin square and destination square is empty" do
+      board = Board.new
+      origin = board.get(:c2).position
+      destination = board.get(:c4).position
+      expect(board.path_clear?(origin, destination)).to be(true)
+    end
+  end
+
+  describe "#path_clear?" do
+    it "returns false when path between the origin square and destination square is not empty" do
+      board = Board.new
+      origin = board.get(:c1).position
+      destination = board.get(:f4).position
+      expect(board.path_clear?(origin, destination)).to be(false)
+    end
+  end
+
   describe '#put' do
     it "puts a new piece on the board when passed a symbol" do
       board = Board.new
