@@ -52,35 +52,23 @@ class Board
 
   # move piece from square to squar
   # TODO: finish this
-  def move(from_square_name, to_square_name)
+  def move_piece(from_square_name, to_square_name)
     # TODO: finish this when Move is functioning
-    # expects string or symbol :a1..:h8
-    # Right now I am not going to worry about validation of 'is this a square on
-    # the board?' type issues - that's what valid_move? is going to take care of.
-    # This function is going to be doing too much to begin with.
+    # expects: +from_square_name+ and +to_square_name+ : may be string
+    #          or symbol :a1..:h8
 
     from_square = get(from_square_name)
     to_square = get(to_square_name)
 
-    piece = from_square.piece
+    @current_piece = from_square.piece
 
     # valid_move?(piece, to_square)
     # Move validation goes here
 
     # move piece
-    to_square.piece = piece
-    piece.current_square = Position.new(to_square_name)
+    to_square.piece = @current_piece
+    @current_piece.current_square = from_square.position
     from_square.piece = nil
-  end
-
-  # is the requested move in the selected piece's possible_moves
-  # Can the square be occupied
-  # does the move create a threat?
-  # TODO: Pull this out and modify when Move is in
-  def valid_move?(piece, from_square, to_square)
-    destination_in_piece_moves?(piece, to_square)
-    can_occupy?(piece, to_square)
-    !creates_threat?(piece, from_square, to_square)
   end
 
   # receive position object & evaluate true if on board, false if off
@@ -93,6 +81,12 @@ class Board
     end
 
     bd.include?(position.to_sym)
+  end
+
+  # validate clear path
+  def path_clear?(origin, destination)
+    path = walk_path(origin, destination)
+    path.all? { |position| !get(position.to_sym).occupied? }
   end
 
   # place piece on specific square
@@ -136,28 +130,8 @@ class Board
   end
 
   #
-  # Pathing and threat work area
+  # work area
   #
-
-  # validate clear path
-  # TODO: Refactor to work from Board
-  def path_clear?
-    path = path_from_piece[0]
-    path.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
-      tmp_directions = {}
-      path.each_key { |key| tmp_directions[key] = n + 1 }
-      @board.get_piece(@origin.relative_position(**tmp_directions)).nil?
-    end
-  end
-
-  # return the path from @piece that matches the movement
-  # from @origin to @destination
-  # TODO: Refactor to work from Board
-  def path_from_piece
-    @piece.possible_moves.select do |move|
-      move if @origin.relative_position(**move) == @destination
-    end
-  end
 
   # return Array of opponent's pieces
   # TODO: Refactor to work from Board
@@ -197,6 +171,15 @@ class Board
   end
 
   private
+
+  # return direction hash
+  def directions_from_piece(origin, destination)
+    # pull direction from @piece that matches the movement
+    # from +origin+ to +destination+ expects Position objects
+    get_piece(origin).possible_moves.select do |move|
+      move if origin.relative_position(**move) == destination
+    end
+  end
 
   # populate array with square objects
   def initialize_squares
@@ -338,5 +321,19 @@ class Board
       square = get(square_name)
       square.piece = piece
     end
+  end
+
+  # return an array of positions
+  def walk_path(origin, destination)
+    # expects +origin+ and +destination+ to be Position objects
+    directions = directions_from_piece(origin, destination)[0]
+
+    path = []
+    directions.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
+      tmp_directions = {}
+      directions.each_key { |key| tmp_directions[key] = n + 1 }
+      path.push(origin.relative_position(**tmp_directions))
+    end
+    path
   end
 end
