@@ -45,23 +45,23 @@ class Position
   #   - :right
   def relative_position(**direction)
     #starting values
-    @target_rank = @rank
-    @target_file = @file
+    target_rank = @rank
+    target_file = @file
     # iterate all directions and perform calculation
     direction.each do |key, amount|
       case key
       when :up
-        @target_rank = @rank.to_i + amount.to_i
+        target_rank = @rank.to_i + amount.to_i
       when :down
-        @target_rank = @rank.to_i - amount.to_i
+        target_rank = @rank.to_i - amount.to_i
       when :left
-        @target_file = (@file.ord - amount.to_i).chr
+        target_file = (@file.ord - amount.to_i).chr
       when :right
-        @target_file = (@file.ord + amount.to_i).chr
+        target_file = (@file.ord + amount.to_i).chr
       end
     end
 
     # return a new position object of the calculated position
-    Position.new((@target_file + @target_rank.to_s).to_sym)
+    Position.new((target_file + target_rank.to_s).to_sym)
   end
 end
