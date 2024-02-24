@@ -51,7 +51,7 @@ class Board
   # Return a piece object at a given location
   def get_piece(square_name)
     # expects +square_name+ = Position obj, string, or symbol (:a1..:h8)
-    get(square_name).piece
+    get(square_name).occupied? ? get(square_name).piece : nil
   end
 
   # move piece from square to square
