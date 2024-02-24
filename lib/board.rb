@@ -106,7 +106,7 @@ class Board
       piece = @piece_handler.create_piece(sanitized_piece_name, color)
     end
 
-    piece.currents_square = target.instance_of?(Position) ? target : get(target).position
+    piece.current_square = target.instance_of?(Position) ? target : get(target).position
 
     square = get(target)
     square.piece = piece
@@ -121,6 +121,8 @@ class Board
     # returns piece object
 
     piece = get_piece(square_name.to_sym)
+    return nil if piece.nil?
+
     piece.current_square = :tray
 
     square = get(square_name.to_sym)
