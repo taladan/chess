@@ -10,14 +10,18 @@ require_relative './pieces/knight.rb'
 require_relative './pieces/bishop.rb'
 require_relative './pieces/queen.rb'
 require_relative './pieces/king.rb'
+require_relative 'threat'
 
 # This class represents a Chess Board
 class Board
+  attr_reader :threats
+
   def initialize
     @squares = initialize_squares
     @piece_handler = Piece.new
     initialize_positions
     initialize_pieces
+    @threats = Threat.new(self)
   end
 
   # return flat array of all squares
@@ -50,141 +54,93 @@ class Board
     get(square_name).piece
   end
 
-  # move piece from square to squar
+  # move piece from square to square
   # TODO: finish this
-  def move_piece(from_square_name, to_square_name)
-    # TODO: finish this when Move is functioning
-    # expects: +from_square_name+ and +to_square_name+ : may be string
+  def move_piece(origin_square_name, target_square_name)
+    # expects: +origin_square_name+ and +target_square_name+ : may be string
     #          or symbol :a1..:h8
 
-    from_square = get(from_square_name)
-    to_square = get(to_square_name)
+    origin = get(origin_square_name).position
+    target = get(target_square_name).position
+    moving_piece = get_piece(origin.to_sym)
 
-    @current_piece = from_square.piece
+    # set up move for testing validity
+    move = Move.new(self, moving_piece, target, threats)
 
-    # valid_move?(piece, to_square)
-    # Move validation goes here
+    return nil unless move.valid?
 
     # move piece
-    to_square.piece = @current_piece
-    @current_piece.current_square = from_square.position
-    from_square.piece = nil
+    moving_piece = remove_piece_from!(origin)
+    put(moving_piece, target)
+    moving_piece.update
   end
 
   # receive position object & evaluate true if on board, false if off
   def on_board?(position)
-    bd = []
+    # expects +position+ to be String, Symbol, or Position
+    square_names_on_board = []
     ('a'..'h').to_a.each do |file|
       (1..8).to_a.each do |rank|
-        bd.push((file + rank.to_s).to_sym)
+        square_names_on_board.push((file + rank.to_s).to_sym)
       end
     end
 
-    bd.include?(position.to_sym)
+    square_names_on_board.include?(position.to_sym)
   end
 
-  # validate clear path
-  def path_clear?(origin, destination)
-    path = walk_path(origin, destination)
+  # return true if path empty, else return false
+  def path_clear?(move_object)
+    # expect +move_object+ to be a Move object
+    path = walk_path(move_object)
     path.all? { |position| !get(position.to_sym).occupied? }
   end
 
   # place piece on specific square
-  def put(piece_name, square_name, color = nil)
-    # This is a destructive method - it overwrites any piece on the square
-    # expects:
-    # - +piece+  - Piece object or string or symbol of piece name
-    #   using string or symbol creates a new piece on the square
-    # - +square+ - string or symbol
-    # - +color+ (optional) - :white or :black
-    #   Note: If you do not include a color and are using this to create a piece
-    #   instead of placing an existing piece it will be colorless and
-    #   render incorrectly.
+  # TODO: Add error handling for passing invalid piece name (not object)
+  # TODO: Add error handling for passing piece name (not object) and no color
+  def put(piece_name, target, color = nil)
     if piece_name.is_a?(Piece)
       piece = piece_name
     else
       sanitized_piece_name = piece_name.to_s.downcase.to_sym
       piece = @piece_handler.create_piece(sanitized_piece_name, color)
     end
-    piece.current_square = Position.new(square_name.to_sym)
-    square = get(square_name)
+
+    piece.currents_square = target.instance_of?(Position) ? target : get(target).position
+
+    square = get(target)
     square.piece = piece
   end
 
   # Remove piece from square
-  def remove_piece_from(square_name)
+  def remove_piece_from!(square_name)
     # this is a destructive method - it overwrites any data that exists on
     # Piece and Square
     # Expects:
     # - +square_name+ - string or symbol
     # returns piece object
-    square = get(square_name.to_sym)
 
-    piece = square.piece
-
+    piece = get_piece(square_name.to_sym)
     piece.current_square = :tray
 
+    square = get(square_name.to_sym)
     square.piece = nil
 
     piece
   end
 
-  #
-  # work area
-  #
-
-  # return Array of opponent's pieces
-  # TODO: Refactor to work from Board
-  def opponent_pieces
-    case @piece.color
-    when :white
-      @board.find_pieces_by_color(:black)
-    when :black
-      @board.find_pieces_by_color(:white)
-    end
-  end
-
-  # TODO: Workout current issue:
-  #       Currently this function only calculates whether a square/position
-  #       is in the set of possible_moves of a piece - it doesn't actually run
-  #       the checks to see if the piece can move through its path to that spot
-  # TODO: Refactor to work from Board
-  def threatens_players_king?
-    player_king_position = @board.find_pieces_by_color(@piece.color).select do |piece|
-      piece.king?
-    end[0].current_square
-
-    opponent_pieces.any? do |piece|
-      piece.possible_moves.any? do |move|
-        test_position = piece.current_square.relative_position(**move)
-        if test_position == player_king_position
-          Move.new(@board, piece, test_position).path_clear?
-        end
-      end
-    end
-  end
-
-  # TODO: Flesh out calculating opponent threat calculation
-  # TODO: Refactor to work from Board
-  def threatens_opponents_king?
-
-  end
-
   private
 
   # return direction hash
-  def directions_from_piece(origin, destination)
-    # pull direction from @piece that matches the movement
-    # from +origin+ to +destination+ expects Position objects
-    get_piece(origin).possible_moves.select do |move|
-      move if origin.relative_position(**move) == destination
+  def directions_from_piece(move_object)
+    # expects +move_object+
+    get_piece(move_object.origin).possible_moves.select do |move|
+      move if move_object.origin.relative_position(**move) == move_object.destination
     end
   end
 
   # populate array with square objects
   def initialize_squares
-    # for a chess board, the top left square from the white position (h1)
-    # is always white.  Chess boards alternate white/black/white/black.
     #  The following rules apply:
     #  - rank index even && file index even - black square.
     #  - rank index even && file index odd - white  square.
@@ -232,6 +188,29 @@ class Board
     populate_pawns
   end
 
+  # return opponent's color
+  def opponent_color(piece)
+    # expects +piece+
+    case piece.color
+    when :white
+      :black
+    when :black
+      :white
+    end
+  end
+
+  # return Array of opponent's pieces
+  def opponent_pieces(color)
+    # expects +piece+ to be :black or :white
+    case color
+    when :white
+      find_pieces_by_color(:black)
+    when :black
+      find_pieces_by_color(:white)
+    end
+  end
+
+  # TODO: refactor populate methods to use #put in order to DRY up code
   def populate_rooks
     [:a1, :h1].each do |square_name|
       piece = @piece_handler.create_piece(:rook, :white)
@@ -324,16 +303,15 @@ class Board
   end
 
   # return an array of positions
-  def walk_path(origin, destination)
-    # expects +origin+ and +destination+ to be Position objects
-    directions = directions_from_piece(origin, destination)[0]
-
+  def walk_path(move_object)
+    # expects +move_object+
+    directions = directions_from_piece(move_object)[0]
     path = []
     directions.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
       tmp_directions = {}
       directions.each_key { |key| tmp_directions[key] = n + 1 }
-      path.push(origin.relative_position(**tmp_directions))
+      path.push(move_object.origin.relative_position(**tmp_directions))
     end
-    path
+    path.map { |position| position unless position == move_object.destination }.compact
   end
 end
