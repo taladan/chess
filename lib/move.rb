@@ -2,95 +2,64 @@
 
 # Move - encompasses the logic of movement
 class Move
-  attr_reader :origin, :destination
+  attr_reader :board, :destination, :origin, :piece, :threats
 
   def initialize(board, piece, destination)
     @board = board
-    @piece = piece
-    @origin = board.get(piece.current_square).position
     @destination = convert_to_position(destination)
-  end
-
-  # validate clear path
-  def path_clear?
-    path = path_from_piece[0]
-    path.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
-      tmp_directions = {}
-      path.each_key { |key| tmp_directions[key] = n + 1 }
-      @board.get_piece(@origin.relative_position(**tmp_directions)).nil?
-    end
-  end
-
-  # return the path from @piece that matches the movement
-  # from @origin to @destination
-  def path_from_piece
-    @piece.possible_moves.select do |move|
-      move if @origin.relative_position(**move) == @destination
-    end
-  end
-
-  # return Array of opponent's pieces
-  def opponent_pieces
-    case @piece.color
-    when :white
-      @board.find_pieces_by_color(:black)
-    when :black
-      @board.find_pieces_by_color(:white)
-    end
-  end
-
-  # TODO: Workout current issue:
-  #       Currently this function only calculates whether a square/position
-  #       is in the set of possible_moves of a piece - it doesn't actually run
-  #       the checks to see if the piece can move through its path to that spot
-  def threatens_players_king?
-    player_king_position = @board.find_pieces_by_color(@piece.color).select do |piece|
-      piece.king?
-    end[0].current_square
-
-    opponent_pieces.any? do |piece|
-      piece.possible_moves.any? do |move|
-        test_position = piece.current_square.relative_position(**move)
-        if test_position == player_king_position
-          Move.new(@board, piece, test_position).path_clear?
-        end
-      end
-    end
-  end
-
-  # TODO: Flesh out calculating opponent threat calculation
-  def threatens_opponents_king?
-
+    @piece = assign_piece(piece)
+    @origin = board.get(@piece.current_square).position
+    @threats = calculate_threats
+    @attack = @board.get(@destination).occupied?
   end
 
   # validate piece movement
   def valid?
-    piece_has_square_in_possible_moves?
-    can_move_to?
-    path_clear? unless @piece.knight?
-    !threatens_players_king?
+    return false unless piece_has_square_in_possible_moves?
+
+    return false unless can_move_to?
+
+    @board.path_clear?(self) unless @piece.knight?
+
+    does_not_threaten_moving_players_king?
   end
 
   private
 
+  ####
+  # Instance variable calculations
+  ####
+
+  # return threat hash based on color of the piece that is moving
+  def calculate_threats
+    case @piece.color
+    when :white
+      @board.threats.squares_threatened_by_black_pieces
+    when :black
+      @board.threats.squares_threatened_by_white_pieces
+    end
+  end
+
+  # returns Piece object
+  def assign_piece(piece)
+    # expects +piece+ to be either Piece object, string or symbol
+    return piece if piece.is_a?(Piece)
+
+    @board.get_piece(piece)
+  end
+
+  ####
+  # Movement validation section
+  ####
+
   # validate destination is valid and occupiable
   def can_move_to?
-    @origin.relative_position(@destination)
+    # @origin.relative_position(@destination)
     square = @board.get(@destination.to_sym)
     if @piece.pawn?
       pawn_can_move_to?
     elsif square.occupied?
       @piece.color != square.piece.color
-    else
-      true
-    end
-  end
-
-  # validate that piece can occupy square
-  def can_occupy?
-    square = @board.get(@destination.to_sym)
-    if square.occupied?
-      square.piece.color != @piece.color
     else
       true
     end
@@ -109,12 +78,10 @@ class Move
   # validate special pawn movement
   def pawn_can_move_to?
     square = @board.get(@destination.to_sym)
-    if @origin.y != position.y
+    if @origin.y != square.position.y
       square.occupied? && @piece.color != square.piece.color
-    elsif square.occupied?
-      @piece.color != square.piece.color
     else
-      true
+      !square.occupied?
     end
   end
 
@@ -123,5 +90,36 @@ class Move
     @piece.possible_moves.any? do |move|
       @origin.relative_position(**move) == @destination
     end
+  end
+
+####
+# Threat
+####
+  # return false if planned move threatens moving player's king
+  def does_not_threaten_moving_players_king?
+    moving_piece = @board.remove_piece_from!(@origin)
+    destination_piece = @board.remove_piece_from!(@destination)
+
+    @board.put(moving_piece, @destination)
+    king_position = find_players_king
+    output = nil
+
+    threats.each_value do |value|
+      value.each do |position|
+        next if output == false
+
+        output = position != king_position
+      end
+    end
+
+    @board.remove_piece_from!(@destination)
+    @board.put(moving_piece, @origin)
+    @board.put(destination_piece, @destination) unless destination_piece.nil?
+    output
+  end
+
+  def find_players_king
+    color = @piece.color == :white ? :white : :black
+    @board.find_pieces_by_color(color).select(&:king?)[0].current_square
   end
 end

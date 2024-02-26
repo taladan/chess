@@ -8,18 +8,21 @@ class Threat
 
   # return hash of all threatened positions, keyed by piece
   def all_threats(attack=true)
+    # optional +attack+ argument accepted must be true or false
     @attack = attack
     squares_threatened_by_black_pieces(@attack).merge(squares_threatened_by_white_pieces(@attack))
   end
 
   # return hash of all positions threatened by black pieces
   def squares_threatened_by_black_pieces(attack=true)
+    # optional +attack+ argument accepted must be true or false
     @attack = attack
     threat_by_color(:black)
   end
 
   # return hash of all squares threatened by white pieces
   def squares_threatened_by_white_pieces(attack=true)
+    # optional +attack+ argument accepted must be true or false
     @attack = attack
     threat_by_color(:white)
   end

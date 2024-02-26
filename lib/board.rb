@@ -65,7 +65,7 @@ class Board
     moving_piece = get_piece(origin.to_sym)
 
     # set up move for testing validity
-    move = Move.new(self, moving_piece, target, threats)
+    move = Move.new(self, moving_piece, target)
 
     return nil unless move.valid?
 

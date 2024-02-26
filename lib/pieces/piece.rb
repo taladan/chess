@@ -41,4 +41,8 @@ class Piece
   def knight?
     instance_of?(Knight)
   end
+
+  def update
+    @already_moved = true
+  end
 end

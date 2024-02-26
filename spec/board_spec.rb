@@ -45,19 +45,23 @@ describe Board do
 
   describe "#path_clear?" do
     it "returns true when path between the origin square and destination square is empty" do
+      require_relative '../lib/move.rb'
       board = Board.new
-      origin = board.get(:c2).position
+      piece = board.get_piece(:c2)
       destination = board.get(:c4).position
-      expect(board.path_clear?(origin, destination)).to be(true)
+      move_object = Move.new(board, piece, destination)
+      expect(board.path_clear?(move_object)).to be(true)
     end
   end
 
   describe "#path_clear?" do
     it "returns false when path between the origin square and destination square is not empty" do
+      require_relative '../lib/move.rb'
       board = Board.new
-      origin = board.get(:c1).position
+      piece = board.get_piece(:c1)
       destination = board.get(:f4).position
-      expect(board.path_clear?(origin, destination)).to be(false)
+      move_object = Move.new(board, piece, destination)
+      expect(board.path_clear?(move_object)).to be(false)
     end
   end
 
@@ -79,20 +83,24 @@ describe Board do
     end
   end
 
-  describe '#remove_piece_from' do
+  describe '#remove_piece_from!!' do
     it 'returns a piece object' do
       board = Board.new
-      piece = board.remove_piece_from(:c2)
+      piece = board.remove_piece_from!(:c2)
       expect(piece).to be_a(Pawn)
     end
   end
 
-  describe '#remove_piece_from' do
+  describe '#remove_piece_from!' do
     it 'removes a piece from a square' do
       board = Board.new
-      piece = board.remove_piece_from(:g2)
+      piece = board.remove_piece_from!(:g2)
       square = board.get(:g2)
       expect(square.piece).to be(nil)
     end
   end
+
+  # TODO: Write tests for:
+  #       - #find_pieces_by_color
+  #       - #move
 end
