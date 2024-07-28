@@ -14,6 +14,7 @@ class Position
   def to_s
     to_sym.to_s
   end
+
   # equivalent positions
   def ==(other)
     self.class == other.class &&
