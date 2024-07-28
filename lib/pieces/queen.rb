@@ -1,75 +1,21 @@
 # frozen_string_literal: true
 
-require_relative './piece.rb'
+require_relative './piece'
 
 # Queen chess piece
 class Queen < Piece
   def possible_moves
-    [
-      {up: 1},
-      {left: 1},
-      {right: 1},
-      {down: 1},
-      {up: 1, left: 1},
-      {up:1, right: 1},
-      {down: 1, left: 1},
-      {down:1, right: 1},
-      {up: 2},
-      {left: 2},
-      {right: 2},
-      {down: 2},
-      {up: 2, left: 2},
-      {up:2, right: 2},
-      {down: 2, left: 2},
-      {down:2, right: 2},
-      {up: 3},
-      {left: 3},
-      {right: 3},
-      {down: 3},
-      {up: 3, left: 3},
-      {up:3, right: 3},
-      {down: 3, left: 3},
-      {down:3, right: 3},
-      {up: 4},
-      {left: 4},
-      {right: 4},
-      {down: 4},
-      {up: 4, left: 4},
-      {up:4, right: 4},
-      {down: 4, left: 4},
-      {down:4, right: 4},
-      {up: 5},
-      {left: 5},
-      {right: 5},
-      {down: 5},
-      {up: 5, left: 5},
-      {up:5, right: 5},
-      {down: 5, left: 5},
-      {down:5, right: 5},
-      {up: 6},
-      {left: 6},
-      {right: 6},
-      {down: 6},
-      {up: 6, left: 6},
-      {up:6, right: 6},
-      {down: 6, left: 6},
-      {down:6, right: 6},
-      {up: 7},
-      {left: 7},
-      {right: 7},
-      {down: 7},
-      {up: 7, left: 7},
-      {up:7, right: 7},
-      {down: 7, left: 7},
-      {down:7, right: 7},
-      {up: 8},
-      {left: 8},
-      {right: 8},
-      {down: 8},
-      {up: 8, left: 8},
-      {up:8, right: 8},
-      {down: 8, left: 8},
-      {down:8, right: 8},
-    ]
+    (1..8).flat_map do |spaces|
+      [
+        { up: spaces },
+        { down: spaces },
+        { left: spaces },
+        { right: spaces },
+        { up: spaces, left: spaces },
+        { up: spaces, right: spaces },
+        { down: spaces, left: spaces },
+        { down: spaces, right: spaces }
+      ]
+    end
   end
 end
