@@ -88,8 +88,7 @@ class Board
   # return true if path empty, else return false
   def path_clear?(move_object)
     # expect +move_object+ to be a Move object
-    path = walk_path(move_object)
-    path.all? { |position| !get(position.to_sym).occupied? }
+    walk_path(move_object).all? { |position| !get(position.to_sym).occupied? }
   end
 
   # place piece on specific square
