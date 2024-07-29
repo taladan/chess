@@ -6,8 +6,12 @@ class Position
 
   def initialize(square_name)
     @file, @rank = square_name.to_s.downcase.split('', 2)
-    @x = (1..8).to_a.index(@rank.to_i)
-    @y = ('a'..'h').to_a.index(@file)
+    @y = (1..8).to_a.index(@rank.to_i)
+    @x = ('a'..'h').to_a.index(@file)
+  end
+
+  def file_and_rank
+    "#{@file}#{rank}".to_sym
   end
 
   # string
@@ -34,7 +38,7 @@ class Position
   end
 
   def to_sym
-    (@file + @rank.to_s).to_sym
+    (@file.to_s + @rank).to_sym
   end
 
   # calculate relative position

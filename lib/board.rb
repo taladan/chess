@@ -5,11 +5,11 @@ require 'pry-byebug'
 require_relative 'square'
 require_relative 'position'
 require_relative './pieces/pawn'
-require_relative './pieces/rook.rb'
-require_relative './pieces/knight.rb'
-require_relative './pieces/bishop.rb'
-require_relative './pieces/queen.rb'
-require_relative './pieces/king.rb'
+require_relative './pieces/rook'
+require_relative './pieces/knight'
+require_relative './pieces/bishop'
+require_relative './pieces/queen'
+require_relative './pieces/king'
 require_relative 'threat'
 
 # This class represents a Chess Board
@@ -42,10 +42,10 @@ class Board
   def get(square_name)
     # expects +square_name+ = Position obj, string, or symbol (:a1..:h8)
     square_name = square_name.to_sym if square_name.instance_of?(Position)
-    rank_letter, file_number = square_name.to_s.downcase.chars
-    rank_index = ('a'..'h').to_a.reverse.index(rank_letter)
-    file_index = file_number.to_i - 1
-    @squares[rank_index][file_index]
+    file_letter, rank_number = square_name.to_s.downcase.chars
+    rank_index = rank_number.to_i - 1
+    file_index = ('a'..'h').to_a.reverse.index(file_letter)
+    @squares[file_index][rank_index]
   end
 
   # Return a piece object at a given location
@@ -148,22 +148,20 @@ class Board
     #  - rank index even && file index odd - white  square.
     #  - rank index odd && file index even - black square.
     #  - rank index odd && file index odd - white  square.
-    array = Array.new(8) {Array.new(8)}
+    array = Array.new(8) { Array.new(8) }
     array.each_with_index do |rank, rank_index|
       rank.each_index do |file_index|
-        if rank_index.even? # Even rank index
-          if file_index.even? # Even file index
-            array[rank_index][file_index] = Square.new(:white)
-          else # Odd file index
-            array[rank_index][file_index] = Square.new(:black)
-          end
-        else # Odd rank index
-          if file_index.odd? # Odd file index
-            array[rank_index][file_index] = Square.new(:white)
-          else # Even file index
-            array[rank_index][file_index] = Square.new(:black)
-          end
-        end
+        array[rank_index][file_index] = if rank_index.even? # Even rank index
+                                          if file_index.even? # Even file index
+                                            Square.new(:white)
+                                          else # Odd file index
+                                            Square.new(:black)
+                                          end
+                                        elsif file_index.odd? # Odd rank index
+                                          Square.new(:white) # Odd file index
+                                        else # Even file index
+                                          Square.new(:black)
+                                        end
         array[rank_index][file_index].rank = rank_index
         array[rank_index][file_index].file = file_index
       end
@@ -214,14 +212,14 @@ class Board
 
   # TODO: refactor populate methods to use #put in order to DRY up code
   def populate_rooks
-    [:a1, :h1].each do |square_name|
+    %i[a1 h1].each do |square_name|
       piece = @piece_handler.create_piece(:rook, :white)
       piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
-    [:a8, :h8].each do |square_name|
+    %i[a8 h8].each do |square_name|
       piece = @piece_handler.create_piece(:rook, :black)
       piece.current_square = Position.new(square_name)
       square = get(square_name)
@@ -230,14 +228,14 @@ class Board
   end
 
   def populate_knights
-    [:b1, :g1].each do |square_name|
+    %i[b1 g1].each do |square_name|
       piece = @piece_handler.create_piece(:knight, :white)
       piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
-    [:b8, :g8].each do |square_name|
+    %i[b8 g8].each do |square_name|
       piece = @piece_handler.create_piece(:knight, :black)
       piece.current_square = Position.new(square_name)
       square = get(square_name)
@@ -246,14 +244,14 @@ class Board
   end
 
   def populate_bishops
-    [:c1, :f1].each do |square_name|
+    %i[c1 f1].each do |square_name|
       piece = @piece_handler.create_piece(:bishop, :white)
       piece.current_square = Position.new(square_name)
       square = get(square_name)
       square.piece = piece
     end
 
-    [:c8, :f8].each do |square_name|
+    %i[c8 f8].each do |square_name|
       piece = @piece_handler.create_piece(:bishop, :black)
       piece.current_square = Position.new(square_name)
       square = get(square_name)
