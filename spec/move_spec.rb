@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require './lib/board.rb'
-require './lib/move.rb'
+require './lib/board'
+require './lib/move'
 
 describe Move do
   describe '#valid?' do
@@ -44,7 +44,7 @@ describe Move do
       expect(move.valid?).to be(true)
     end
 
-    it 'returns true when a king tries to move into a threatened square' do
+    it 'returns false when a king tries to move into a threatened square' do
       board = Board.new
       board.put(:rook, :a3, :black)
       board.remove_piece_from!(:e2)

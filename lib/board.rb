@@ -10,18 +10,15 @@ require_relative './pieces/knight'
 require_relative './pieces/bishop'
 require_relative './pieces/queen'
 require_relative './pieces/king'
-require_relative 'threat'
+require_relative 'move'
 
 # This class represents a Chess Board
 class Board
-  attr_reader :threats
-
   def initialize
     @squares = initialize_squares
     @piece_handler = Piece.new
     initialize_positions
     initialize_pieces
-    @threats = Threat.new(self)
   end
 
   # return flat array of all squares

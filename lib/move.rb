@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'threat'
+
 # Move - encompasses the logic of movement
 class Move
   attr_reader :board, :destination, :origin, :piece, :threats
@@ -9,7 +11,8 @@ class Move
     @destination = convert_to_position(destination)
     @piece = assign_piece(piece)
     @origin = board.get(@piece.current_square).position
-    @threats = calculate_threats
+    @threats = Threat.new(@board)
+    @threat_by_color = calculate_threats
     @attack = @board.get(@destination).occupied?
   end
 
@@ -34,9 +37,9 @@ class Move
   def calculate_threats
     case @piece.color
     when :white
-      @board.threats.squares_threatened_by_black_pieces
+      @threats.squares_threatened_by_black_pieces
     when :black
-      @board.threats.squares_threatened_by_white_pieces
+      @threats.squares_threatened_by_white_pieces
     end
   end
 
@@ -78,7 +81,7 @@ class Move
   # validate special pawn movement
   def pawn_can_move_to?
     square = @board.get(@destination.to_sym)
-    if @origin.y != square.position.y
+    if @origin.file != square.position.file
       square.occupied? && @piece.color != square.piece.color
     else
       !square.occupied?
@@ -92,9 +95,9 @@ class Move
     end
   end
 
-####
-# Threat
-####
+  ####
+  # Threat
+  ####
   # return false if planned move threatens moving player's king
   def does_not_threaten_moving_players_king?
     moving_piece = @board.remove_piece_from!(@origin)
@@ -104,7 +107,7 @@ class Move
     king_position = find_players_king
     output = nil
 
-    threats.each_value do |value|
+    @threat_by_color.each_value do |value|
       value.each do |position|
         next if output == false
 
