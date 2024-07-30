@@ -42,10 +42,15 @@ class Piece
     instance_of?(Knight)
   end
 
+  def rook?
+    instance_of?(Rook)
+  end
+
   def update
     @already_moved = true
   end
 
+  # has the piece moved at least once?
   def has_moved?
     @already_moved
   end
