@@ -5,10 +5,10 @@
 # #possible_moves - return array of possible moves based on piece movement
 #                   algorithm
 class Piece
-  attr_reader :color, :pieces
+  attr_reader :color, :pieces, :already_moved
   attr_accessor :current_square
 
-  def initialize(color=nil)
+  def initialize(color = nil)
     @color = color
     @current_square = :tray
     @already_moved = false
