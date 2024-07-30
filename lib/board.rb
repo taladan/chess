@@ -160,6 +160,7 @@ class Board
     true
   end
 
+  # return the square behind the pawn that moved
   def calculate_occupiable_en_passant_square(move)
     case move.piece.color
     when :black
