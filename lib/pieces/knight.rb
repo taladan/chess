@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './piece.rb'
+require_relative './piece'
 
 # Knight chess piece
 class Knight < Piece
@@ -13,7 +13,7 @@ class Knight < Piece
       { down: 1, left: 2 },
       { down: 2, right: 1 },
       { down: 1, left: 2 },
-      { down: 2, right: 1 }
+      { down: 2, left: 1 }
     ]
   end
 end
