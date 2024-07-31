@@ -337,4 +337,32 @@ describe Board do
       expect(board.en_passant).to be(nil)
     end
   end
+
+  describe 'move_piece' do
+    it 'tries to make a valid castle of a king to the right' do
+      board = Board.new
+      %i[f1 g1].each do |square|
+        board.remove_piece_from!(square)
+      end
+      expect(board.move_piece(:e1, :g1)).to be(true)
+      expect(board.get_piece(:f1)).to be_a(Rook)
+      expect(board.get_piece(:f1).has_moved?).to be(true)
+      expect(board.get_piece(:g1)).to be_a(King)
+      expect(board.get_piece(:g1).has_moved?).to be(true)
+    end
+  end
+
+  describe 'move_piece' do
+    it 'tries to make a valid castle of a king to the left' do
+      board = Board.new
+      %i[b1 c1 d1].each do |square|
+        board.remove_piece_from!(square)
+      end
+      expect(board.move_piece(:e1, :c1)).to be(true)
+      expect(board.get_piece(:d1)).to be_a(Rook)
+      expect(board.get_piece(:d1).has_moved?).to be(true)
+      expect(board.get_piece(:c1)).to be_a(King)
+      expect(board.get_piece(:c1).has_moved?).to be(true)
+    end
+  end
 end

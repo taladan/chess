@@ -56,7 +56,6 @@ class Board
   end
 
   # move piece from square to square
-  # TODO: finish this
   def move_piece(origin_square_name, target_square_name)
     # expects: +origin_square_name+ and +target_square_name+ : may be string
     #          or symbol :a1..:h8
@@ -78,9 +77,18 @@ class Board
     set_en_passant(move) if en_passant?(move)
 
     # move piece
-    moving_piece = remove_piece_from!(origin)
-    put(moving_piece, target)
-    moving_piece.update
+    if move.castle?
+      king = remove_piece_from!(origin)
+      rook = remove_piece_from!(move.get_castling_rook_square)
+      put(king, target)
+      put(rook, move.get_castling_rook_target_square)
+      king.update
+      rook.update
+    else
+      moving_piece = remove_piece_from!(origin)
+      put(moving_piece, target)
+      moving_piece.update
+    end
   end
 
   # receive position object & evaluate true if on board, false if off
