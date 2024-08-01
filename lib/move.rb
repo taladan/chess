@@ -222,7 +222,7 @@ class Move
     king_position = find_players_king
     output = nil
 
-    @threats.each_value do |value|
+    calculate_threats.each_value do |value|
       value.each do |position|
         next if output == false
 

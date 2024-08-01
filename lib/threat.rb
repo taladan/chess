@@ -7,21 +7,21 @@ class Threat
   end
 
   # return hash of all threatened positions, keyed by piece
-  def all_threats(attack=true)
+  def all_threats(attack = true)
     # optional +attack+ argument accepted must be true or false
     @attack = attack
     squares_threatened_by_black_pieces(@attack).merge(squares_threatened_by_white_pieces(@attack))
   end
 
   # return hash of all positions threatened by black pieces
-  def squares_threatened_by_black_pieces(attack=true)
+  def squares_threatened_by_black_pieces(attack = true)
     # optional +attack+ argument accepted must be true or false
     @attack = attack
     threat_by_color(:black)
   end
 
   # return hash of all squares threatened by white pieces
-  def squares_threatened_by_white_pieces(attack=true)
+  def squares_threatened_by_white_pieces(attack = true)
     # optional +attack+ argument accepted must be true or false
     @attack = attack
     threat_by_color(:white)
@@ -32,9 +32,62 @@ class Threat
   # return array of positions on board threatened by piece
   def get_squares_threatened_by_piece(piece)
     # expects +piece+ to be a Piece object
-    threatened_squares(piece).map do |square|
-      square if @board.on_board?(square)
+    blocked_directions = []
+    threats = []
+    threatened_squares(piece).map do |movement|
+      square = movement.values.pop
+      # skip our own square
+      next if square == piece.current_square
+
+      move = movement.keys.pop
+      # Is this direction already blocked?
+      next if blocked_directions.include?(move.keys)
+
+      # Block this direction and skip if it's not even on the board
+      unless @board.on_board?(square)
+        blocked_directions.push(move.keys)
+        next
+      end
+
+      # Square's empty?  Threatenable!
+
+      if @board.get_piece(square).nil?
+        threats.push(square)
+        next
+      end
+
+      # Enemy piece?  Threatenable but blocks further travel in this direction
+      if square_has_enemy_piece?(piece, square)
+        blocked_directions.push(move.keys)
+        threats.push(square)
+        next
+      # Player's piece? block this direction and skip
+      elsif square_has_players_piece?(piece, square)
+        blocked_directions.push(move.keys)
+        next
+      end
     end.compact
+    threats
+  end
+
+  # returns boolean
+  def square_has_enemy_piece?(piece, square)
+    case piece.color
+    when :white
+      @board.get_piece(square).color == :black
+    when :black
+      @board.get_piece(square).color == :white
+    end
+  end
+
+  # returns boolean
+  def square_has_players_piece?(piece, square)
+    case piece.color
+    when :white
+      @board.get_piece(square).color == :white
+    when :black
+      @board.get_piece(square).color == :black
+    end
   end
 
   # return hash of threatened squares
@@ -54,7 +107,7 @@ class Threat
 
     moves = []
     piece.possible_moves.each do |move|
-      moves.push(piece.current_square.relative_position(**move))
+      moves.push({ move => piece.current_square.relative_position(**move) })
     end
     moves
   end
@@ -66,7 +119,7 @@ class Threat
     piece.possible_moves.each do |move|
       next if move.length == 1
 
-      moves.push(piece.current_square.relative_position(**move))
+      moves.push({ move => piece.current_square.relative_position(**move) })
     end
     moves
   end

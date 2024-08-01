@@ -20,10 +20,10 @@ describe Move do
     end
 
     it 'returns false when a piece cannot move because it threatens the moving players king' do
-      board = Board.new
-      board.remove_piece_from!(:e3)
+      board = Board.new(clear: true)
       board.put(:rook, :e3, :white)
       board.put(:queen, :e4, :black)
+      board.put(:king, :e1, :white)
       piece = board.get_piece(:e3)
       move = Move.new(board, piece, :a3)
       expect(move.valid?).to be(false)
