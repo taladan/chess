@@ -16,11 +16,11 @@ require_relative 'move'
 class Board
   attr_reader :en_passant, :en_passant_square, :en_passant_threat, :en_passant_square_opponent_will_occupy
 
-  def initialize
+  def initialize(clear: false)
     @squares = initialize_squares
     @piece_handler = Piece.new
     initialize_positions
-    initialize_pieces
+    initialize_pieces unless clear
   end
 
   # return flat array of all squares
