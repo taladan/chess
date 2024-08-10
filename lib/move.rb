@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 require_relative 'threat'
+require_relative 'castle'
 
 # Move - encompasses the logic of movement
 class Move
-  attr_reader :board, :destination, :origin, :piece
+  attr_reader :board, :destination, :origin, :piece, :threats, :castling_rook_target_square, :castling_rook_square
 
   def initialize(board, piece, destination)
     @board = board
     @destination = convert_to_position(destination)
-    @piece = assign_piece(piece)
+    @piece = piece.is_a?(Piece) ? piece : @board.get_piece(piece)
     @origin = board.get(@piece.current_square).position
     @threats = calculate_threats
     @attack = @board.get(@destination).occupied?
@@ -17,7 +18,7 @@ class Move
 
   # validate piece movement
   def valid?
-    return false unless piece_has_square_in_possible_moves?
+    return false unless piece.has_square_in_possible_moves?(@destination)
 
     return false unless can_move_to?
 
@@ -28,120 +29,15 @@ class Move
 
   # Check the move to see if it qualifies as a castle maneuver
   def castle?
-    # Castling requires that the following rules are true:
-    # - must be a king moving
-    # - must be in the same rank (lateral movement only)
-    # - must be a movement of exactly 2 spaces
-    # - can't have already moved
-    # - can't if rook in that direction has already moved
-    # - can't if king is in check at origin
-    # - can't if destination is threatened
-    # - can't if movement path is threatened
+    castle = Castle.new(self)
 
-    piece.king? &&
-      origin.rank == destination.rank &&
-      (origin.file.to_s.ord - destination.file.to_s.ord).abs == 2 &&
-      !piece.has_moved? &&
-      !rook_has_moved? &&
-      !piece_threatened? &&
-      !destination_threatened? &&
-      !path_threatened?
-  end
-
-  # return the rook piece the king is castling toward
-  def get_castling_rook_square
-    rook_square
-  end
-
-  # return the target square of the rook involved in the castle maneuver
-  def get_castling_rook_target_square
-    get_skipped_square_for_castling_king
+    # return the target square of the rook involved in the castle maneuver
+    @castling_rook_target_square = castle.get_skipped_square_for_castling_king
+    @castling_rook_square = castle.get_castling_rook_square
+    castle.check_move
   end
 
   private
-
-  ###
-  # Castling methods
-  ###
-
-  # returns boolean
-  def piece_threatened?
-    # @threats.include?(origin)
-    square_threatened?(origin)
-  end
-
-  # returns boolean
-  def destination_threatened?
-    # @threats.include?(destination)
-    square_threatened?(destination)
-  end
-
-  # returns boolean
-  def path_threatened?
-    square_threatened?(get_skipped_square_for_castling_king)
-  end
-
-  # return a symbol name of square the king passes over in castle maneuver
-  def get_skipped_square_for_castling_king
-    case get_direction_of_lateral_movement
-    when :left
-      target = board.get(:d1).position if piece.color == :white
-      target = board.get(:d8).position if piece.color == :black
-    when :right
-      target = board.get(:f1).position if piece.color == :white
-      target = board.get(:f8).position if piece.color == :black
-    end
-    target
-  end
-
-  # return boolean
-  def square_threatened?(square_position)
-    # expects a +square_position+ to be a position object
-    @threats.each_value.each.to_a.flatten.include?(square_position)
-  end
-
-  # returns a boolean
-  def rook_has_moved?
-    return true if rook_square_empty?
-
-    piece_in_rook_square = board.get_piece(rook_square)
-    return true unless piece_in_rook_square.rook? && piece_in_rook_square.color == piece.color
-
-    piece_in_rook_square.has_moved?
-  end
-
-  def rook_square_empty?
-    # if the square is occupied, send false (not empty)
-    !board.get(rook_square).occupied?
-  end
-
-  # get the name of the rook's square depending on king's lateral movement
-  def rook_square
-    case get_direction_of_lateral_movement
-    when :left
-      target_square = :a1 if piece.color == :white
-      target_square = :a8 if piece.color == :black
-    when :right
-      target_square = :h1 if piece.color == :white
-      target_square = :h8 if piece.color == :black
-    end
-    target_square
-  end
-
-  # return :left or :right
-  def get_direction_of_lateral_movement
-    direction = :left if origin.file > destination.file
-    direction = :right if origin.file < destination.file
-    direction
-  end
-
-  # return :up or :down
-  # This is not used yet, but might become useful in the future, came about as a completion to #get_direction_of_lateral_movement
-  # For now I'm leaving this in the Castling section
-  def get_direction_of_vertical_movement
-    :up if origin.rank < destination.rank
-    :down if origin.rank > destination.rank
-  end
 
   ####
   # Instance variable calculations
@@ -156,14 +52,6 @@ class Move
     when :black
       threat_object.squares_threatened_by_white_pieces
     end
-  end
-
-  # returns Piece object
-  def assign_piece(piece)
-    # expects +piece+ to be either Piece object, string or symbol
-    return piece if piece.is_a?(Piece)
-
-    @board.get_piece(piece)
   end
 
   ####
@@ -203,13 +91,6 @@ class Move
     end
   end
 
-  # validate destination is within piece's possible moves
-  def piece_has_square_in_possible_moves?
-    @piece.possible_moves.any? do |move|
-      @origin.relative_position(**move) == @destination
-    end
-  end
-
   ####
   # Threat
   ####
@@ -236,6 +117,7 @@ class Move
     output
   end
 
+  # return square object
   def find_players_king
     color = @piece.color == :white ? :white : :black
     @board.find_pieces_by_color(color).select(&:king?)[0].current_square
