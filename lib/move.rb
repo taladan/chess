@@ -2,10 +2,12 @@
 
 require_relative 'threat'
 require_relative 'castle'
+require_relative 'enpassant'
 
 # Move - encompasses the logic of movement
 class Move
-  attr_reader :board, :destination, :origin, :piece, :threats, :castling_rook_target_square, :castling_rook_square
+  attr_reader :board, :destination, :origin, :piece, :threats, :castling_rook_target_square, :castling_rook_square,
+              :enpassant
 
   def initialize(board, piece, destination)
     @board = board
@@ -14,6 +16,7 @@ class Move
     @origin = board.get(@piece.current_square).position
     @threats = calculate_threats
     @attack = @board.get(@destination).occupied?
+    @enpassant = EnPassant.new(self)
   end
 
   # validate piece movement
@@ -36,6 +39,15 @@ class Move
     @castling_rook_square = castle.get_castling_rook_square
     castle.check_move
   end
+
+  # return direction hash
+  def directions
+    # expects +move_object+
+    @piece.possible_moves.find do |move|
+      move if @origin.relative_position(**move) == @destination
+    end
+  end
+
 
   private
 

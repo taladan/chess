@@ -324,9 +324,9 @@ describe Board do
       board = Board.new
       board.put(:pawn, :b5, :white)
       board.move_piece(:a7, :a5)
-      expect(board.en_passant).to be(true)
-      expect(board.en_passant_square.to_sym).to be(:a5)
-      expect(board.en_passant_square_opponent_will_occupy.to_sym).to be(:a6)
+      expect(board.en_passant).not_to be(false)
+      expect(board.en_passant.square.to_sym).to be(:a5)
+      expect(board.en_passant.opponent_target_square.to_sym).to be(:a6)
     end
   end
 
@@ -334,7 +334,7 @@ describe Board do
     it 'tries to move a pawn and does note cause an en_passant condition' do
       board = Board.new
       board.move_piece(:a2, :a4)
-      expect(board.en_passant).to be(nil)
+      expect(board.en_passant).to be(false)
     end
   end
 

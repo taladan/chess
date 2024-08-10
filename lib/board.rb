@@ -14,11 +14,12 @@ require_relative 'move'
 
 # This class represents a Chess Board
 class Board
-  attr_reader :en_passant, :en_passant_square, :en_passant_threat, :en_passant_square_opponent_will_occupy
+  attr_reader :en_passant
 
   def initialize(clear: false)
     @squares = initialize_squares
     @piece_handler = Piece.new
+    @en_passant = false
     initialize_positions
     initialize_pieces unless clear
   end
@@ -74,7 +75,7 @@ class Board
     end
 
     # check for en passant
-    set_en_passant(move) if en_passant?(move)
+    @en_passant = move.enpassant.en_passant? ? move.enpassant : false
 
     # move piece
     if move.castle?
@@ -137,73 +138,6 @@ class Board
   end
 
   private
-
-  # TODO: Migrate En Passant to its own Object
-  # fill out en passant settings
-  # the @en_passant_threat is going to be either an empty array or an array with 1-2 values.
-  def set_en_passant(move)
-    @en_passant = true
-    @en_passant_square = move.destination
-    @en_passant_threat = check_for_enemy_pawn_neighbors(move)
-    @en_passant_square_opponent_will_occupy = calculate_occupiable_en_passant_square(move)
-  end
-
-  # TODO: Migrate En Passant to its own Object
-  # check if current move is en_passant
-  def en_passant?(move)
-    return false unless move.piece.pawn?
-    return false if move.piece.already_moved
-    return false unless move.origin.file == move.destination.file
-    return false unless (move.destination.rank.to_i - move.origin.rank.to_i).abs == 2
-    return false if check_for_enemy_pawn_neighbors(move).empty?
-
-    true
-  end
-
-  # TODO: Migrate En Passant to its own Object
-  # return the square behind the pawn that moved
-  def calculate_occupiable_en_passant_square(move)
-    case move.piece.color
-    when :black
-      move.destination.relative_position(up: 1)
-    when :white
-      move.destination.relative_position(down: 1)
-    end
-  end
-
-  # TODO: Migrate En Passant to its own Object
-  # Check neighbors of destination square for an enemy pawn - purely for en passant
-  def check_for_enemy_pawn_neighbors(move)
-    left = move.destination.relative_position(left: 1)
-    right = move.destination.relative_position(right: 1)
-
-    left_neighbor = if on_board?(left) && !get_piece(left).nil?
-                      get_piece(left)
-                    else
-                      false
-                    end
-
-    right_neighbor = if on_board?(right) && !get_piece(right).nil?
-                       get_piece(right)
-                     else
-                       false
-                     end
-
-    results = []
-    results << left_neighbor if left_neighbor && left_neighbor.pawn? && left_neighbor.color != move.piece.color
-
-    results << right_neighbor if right_neighbor && right_neighbor.pawn? && right_neighbor.color != move.piece.color
-
-    results
-  end
-
-  # return direction hash
-  def directions(move_object)
-    # expects +move_object+
-    get_piece(move_object.origin).possible_moves.find do |move|
-      move if move_object.origin.relative_position(**move) == move_object.destination
-    end
-  end
 
   # populate array with square objects
   def initialize_squares
@@ -289,7 +223,7 @@ class Board
   def walk_path(move_object)
     # expects +move_object+
     # don't need to rerun this every time
-    dir = directions(move_object)
+    dir = move_object.directions
     path = []
     dir.flatten.find { |value| value.instance_of?(Integer) }.times do |n|
       tmp_directions = {}
