@@ -14,13 +14,13 @@ require_relative 'move'
 
 # This class represents a Chess Board
 class Board
-  attr_reader :en_passant
+  attr_reader :en_passant, :squares
 
   def initialize(clear: false)
     @squares = Square.initialize_squares
     @piece_handler = Piece.new
     @en_passant = false
-    initialize_positions
+    Position.initialize_positions(self)
     initialize_pieces unless clear
   end
 
@@ -138,16 +138,6 @@ class Board
   end
 
   private
-
-  # iterate through squares and return position object for each
-  def initialize_positions
-    ('a'..'h').to_a.each do |file|
-      (1..8).each do |rank|
-        name = (file + rank.to_s).to_sym
-        get(name).position = Position.new(name)
-      end
-    end
-  end
 
   # initialize Pieces on the board for play
   def initialize_pieces

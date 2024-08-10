@@ -10,8 +10,19 @@ class Position
     @x = ('a'..'h').to_a.index(@file)
   end
 
+  # iterate through squares and return position object for each
+  def self.initialize_positions(board_object)
+    ('a'..'h').to_a.each do |file|
+      (1..8).each do |rank|
+        name = (file + rank.to_s).to_sym
+        board_object.get(name).position = Position.new(name)
+      end
+    end
+  end
+
+  # return a symbol of file and rank
   def file_and_rank
-    "#{@file}#{rank}".to_sym
+    "#{@file}#{@rank}".to_sym
   end
 
   # string
