@@ -16,6 +16,25 @@ class Square
     @file = nil
   end
 
+  # populate array with square objects
+  def self.initialize_squares
+    #  The following rules apply:
+    #  - rank index even && file index even - black square.
+    #  - rank index even && file index odd - white  square.
+    #  - rank index odd && file index even - black square.
+    #  - rank index odd && file index odd - white  square.
+
+    Array.new(8) do |rank_index|
+      Array.new(8) do |file_index|
+        color = (rank_index + file_index).even? ? :white : :black
+        Square.new(color).tap do |square|
+          square.rank = rank_index
+          square.file = file_index
+        end
+      end
+    end
+  end
+
   def occupied?
     !@piece.nil?
   end

@@ -17,7 +17,7 @@ class Board
   attr_reader :en_passant
 
   def initialize(clear: false)
-    @squares = initialize_squares
+    @squares = Square.initialize_squares
     @piece_handler = Piece.new
     @en_passant = false
     initialize_positions
@@ -138,33 +138,6 @@ class Board
   end
 
   private
-
-  # populate array with square objects
-  def initialize_squares
-    #  The following rules apply:
-    #  - rank index even && file index even - black square.
-    #  - rank index even && file index odd - white  square.
-    #  - rank index odd && file index even - black square.
-    #  - rank index odd && file index odd - white  square.
-    array = Array.new(8) { Array.new(8) }
-    array.each_with_index do |rank, rank_index|
-      rank.each_index do |file_index|
-        array[rank_index][file_index] = if rank_index.even? # Even rank index
-                                          if file_index.even? # Even file index
-                                            Square.new(:white)
-                                          else # Odd file index
-                                            Square.new(:black)
-                                          end
-                                        elsif file_index.odd? # Odd rank index
-                                          Square.new(:white) # Odd file index
-                                        else # Even file index
-                                          Square.new(:black)
-                                        end
-        array[rank_index][file_index].rank = rank_index
-        array[rank_index][file_index].file = file_index
-      end
-    end
-  end
 
   # iterate through squares and return position object for each
   def initialize_positions
