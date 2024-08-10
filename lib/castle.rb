@@ -24,7 +24,7 @@ class Castle
 
   # return a symbol name of the rook's square depending on king's lateral movement
   def get_castling_rook_square
-    case get_direction_of_lateral_movement
+    case direction_of_lateral_movement
     when :left
       target_square = :a1 if @piece.color == :white
       target_square = :a8 if @piece.color == :black
@@ -37,7 +37,7 @@ class Castle
 
   # return a symbol name of square the king passes over in castle maneuver
   def get_skipped_square_for_castling_king
-    case get_direction_of_lateral_movement
+    case direction_of_lateral_movement
     when :left
       target = @board.get(:d1).position if @piece.color == :white
       target = @board.get(:d8).position if @piece.color == :black
@@ -89,7 +89,7 @@ class Castle
   end
 
   # return :left or :right
-  def get_direction_of_lateral_movement
+  def direction_of_lateral_movement
     direction = :left if @origin.file > @destination.file
     direction = :right if @origin.file < @destination.file
     direction

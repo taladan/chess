@@ -79,9 +79,9 @@ class Board
     # move piece
     if move.castle?
       king = remove_piece_from!(origin)
-      rook = remove_piece_from!(move.get_castling_rook_square)
+      rook = remove_piece_from!(move.castling_rook_square)
       put(king, target)
-      put(rook, move.get_castling_rook_target_square)
+      put(rook, move.castling_rook_target_square)
       king.update
       rook.update
     else
