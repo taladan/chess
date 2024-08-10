@@ -148,6 +148,7 @@ class Board
 
   private
 
+  # TODO: Migrate En Passant to its own Object
   # fill out en passant settings
   # the @en_passant_threat is going to be either an empty array or an array with 1-2 values.
   def set_en_passant(move)
@@ -157,6 +158,7 @@ class Board
     @en_passant_square_opponent_will_occupy = calculate_occupiable_en_passant_square(move)
   end
 
+  # TODO: Migrate En Passant to its own Object
   # check if current move is en_passant
   def en_passant?(move)
     return false unless move.piece.pawn?
@@ -168,6 +170,7 @@ class Board
     true
   end
 
+  # TODO: Migrate En Passant to its own Object
   # return the square behind the pawn that moved
   def calculate_occupiable_en_passant_square(move)
     case move.piece.color
@@ -178,6 +181,7 @@ class Board
     end
   end
 
+  # TODO: Migrate En Passant to its own Object
   # Check neighbors of destination square for an enemy pawn - purely for en passant
   def check_for_enemy_pawn_neighbors(move)
     left = move.destination.relative_position(left: 1)
@@ -258,118 +262,37 @@ class Board
     populate_pawns
   end
 
-  # return opponent's color
-  def opponent_color(piece)
-    # expects +piece+
-    case piece.color
-    when :white
-      :black
-    when :black
-      :white
-    end
-  end
-
-  # return Array of opponent's pieces
-  def opponent_pieces(color)
-    # expects +piece+ to be :black or :white
-    case color
-    when :white
-      find_pieces_by_color(:black)
-    when :black
-      find_pieces_by_color(:white)
-    end
-  end
-
-  # TODO: refactor populate methods to use #put in order to DRY up code
   def populate_rooks
-    %i[a1 h1].each do |square_name|
-      piece = @piece_handler.create_piece(:rook, :white)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
-
-    %i[a8 h8].each do |square_name|
-      piece = @piece_handler.create_piece(:rook, :black)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
+    %i[a1 h1].each { |square_name| put(:rook, square_name, :white) }
+    %i[a8 h8].each { |square_name| put(:rook, square_name, :black) }
   end
 
   def populate_knights
-    %i[b1 g1].each do |square_name|
-      piece = @piece_handler.create_piece(:knight, :white)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
-
-    %i[b8 g8].each do |square_name|
-      piece = @piece_handler.create_piece(:knight, :black)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
+    %i[b1 g1].each { |square_name| put(:knight, square_name, :white) }
+    %i[b8 g8].each { |square_name| put(:knight, square_name, :black) }
   end
 
   def populate_bishops
-    %i[c1 f1].each do |square_name|
-      piece = @piece_handler.create_piece(:bishop, :white)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
-
-    %i[c8 f8].each do |square_name|
-      piece = @piece_handler.create_piece(:bishop, :black)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
+    %i[c1 f1].each { |square_name| put(:bishop, square_name, :white) }
+    %i[c8 f8].each { |square_name| put(:bishop, square_name, :black) }
   end
 
   def populate_queens
-    white_queen = @piece_handler.create_piece(:queen, :white)
-    white_queen.current_square = Position.new(:d1)
-    wq_square = get(:d1)
-    wq_square.piece = white_queen
-
-    black_queen = @piece_handler.create_piece(:queen, :black)
-    black_queen.current_square = Position.new(:d8)
-    bq_square = get(:d8)
-    bq_square.piece = black_queen
+    put(:queen, :d1, :white)
+    put(:queen, :d8, :black)
   end
 
   def populate_kings
-    white_king = @piece_handler.create_piece(:king, :white)
-    white_king.current_square = Position.new(:e1)
-    wk_square = get(:e1)
-    wk_square.piece = white_king
-
-    black_king = @piece_handler.create_piece(:king, :black)
-    black_king.current_square = Position.new(:e8)
-    bk_square = get(:e8)
-    bk_square.piece = black_king
+    put(:king, :e1, :white)
+    put(:king, :e8, :black)
   end
 
   def populate_pawns
     rank2 = ('a'..'h').to_a.map { |file| (file + 2.to_s).to_sym }
     rank7 = ('a'..'h').to_a.map { |file| (file + 7.to_s).to_sym }
 
-    rank2.each do |square_name|
-      piece = @piece_handler.create_piece(:pawn, :white)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
-
-    rank7.each do |square_name|
-      piece = @piece_handler.create_piece(:pawn, :black)
-      piece.current_square = Position.new(square_name)
-      square = get(square_name)
-      square.piece = piece
-    end
+    rank2.each { |square_name| put(:pawn, square_name, :white) }
+    rank7.each { |square_name| put(:pawn, square_name, :black) }
   end
 
   # return an array of positions
