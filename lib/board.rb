@@ -111,20 +111,10 @@ class Board
   end
 
   # place piece on specific square
-  # TODO: Add error handling for passing invalid piece name (not object)
-  # TODO: Add error handling for passing piece name (not object) and no color
   def put(piece_name, target, color = nil)
-    if piece_name.is_a?(Piece)
-      piece = piece_name
-    else
-      sanitized_piece_name = piece_name.to_s.downcase.to_sym
-      piece = @piece_handler.create_piece(sanitized_piece_name, color)
-    end
-
+    piece = piece_name.is_a?(Piece) ? piece_name : @piece_handler.create_piece(piece_name.to_s.downcase.to_sym, color)
     piece.current_square = target.instance_of?(Position) ? target : get(target).position
-
-    square = get(target)
-    square.piece = piece
+    get(target).piece = piece
   end
 
   # Remove piece from square
