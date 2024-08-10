@@ -139,7 +139,6 @@ class Board
 
   private
 
-
   # return an array of positions
   def walk_path(move_object)
     # expects +move_object+
