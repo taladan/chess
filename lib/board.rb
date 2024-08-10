@@ -21,7 +21,7 @@ class Board
     @piece_handler = Piece.new
     @en_passant = false
     Position.initialize_positions(self)
-    initialize_pieces unless clear
+    Piece.initialize_pieces(self) unless clear
   end
 
   # return flat array of all squares
@@ -139,48 +139,6 @@ class Board
 
   private
 
-  # initialize Pieces on the board for play
-  def initialize_pieces
-    populate_rooks
-    populate_knights
-    populate_bishops
-    populate_queens
-    populate_kings
-    populate_pawns
-  end
-
-  def populate_rooks
-    %i[a1 h1].each { |square_name| put(:rook, square_name, :white) }
-    %i[a8 h8].each { |square_name| put(:rook, square_name, :black) }
-  end
-
-  def populate_knights
-    %i[b1 g1].each { |square_name| put(:knight, square_name, :white) }
-    %i[b8 g8].each { |square_name| put(:knight, square_name, :black) }
-  end
-
-  def populate_bishops
-    %i[c1 f1].each { |square_name| put(:bishop, square_name, :white) }
-    %i[c8 f8].each { |square_name| put(:bishop, square_name, :black) }
-  end
-
-  def populate_queens
-    put(:queen, :d1, :white)
-    put(:queen, :d8, :black)
-  end
-
-  def populate_kings
-    put(:king, :e1, :white)
-    put(:king, :e8, :black)
-  end
-
-  def populate_pawns
-    rank2 = ('a'..'h').to_a.map { |file| (file + 2.to_s).to_sym }
-    rank7 = ('a'..'h').to_a.map { |file| (file + 7.to_s).to_sym }
-
-    rank2.each { |square_name| put(:pawn, square_name, :white) }
-    rank7.each { |square_name| put(:pawn, square_name, :black) }
-  end
 
   # return an array of positions
   def walk_path(move_object)
