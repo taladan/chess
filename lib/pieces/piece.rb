@@ -19,6 +19,13 @@ class Piece
     []
   end
 
+  # validate destination is within piece's possible moves
+  def has_square_in_possible_moves?(destination)
+    possible_moves.any? do |move|
+      @current_square.relative_position(**move) == destination
+    end
+  end
+
   def create_piece(type, color)
     case type
     when :pawn then Pawn.new(color)
