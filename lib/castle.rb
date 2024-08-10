@@ -56,18 +56,12 @@ class Castle
 
   # returns a boolean
   def rook_has_moved?
-    return true if rook_square_empty?
+    return true unless @board.get(get_castling_rook_square).occupied?
 
     piece_in_rook_square = @board.get_piece(get_castling_rook_square)
     return true unless piece_in_rook_square.rook? && piece_in_rook_square.color == @piece.color
 
     piece_in_rook_square.has_moved?
-  end
-
-  # return true if target rook square is empty
-  def rook_square_empty?
-    # if the square is occupied, send false (not empty)
-    !@board.get(get_castling_rook_square).occupied?
   end
 
   ####
