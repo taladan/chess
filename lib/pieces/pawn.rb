@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './piece.rb'
+require_relative './piece'
 
 # pawn object
 class Pawn < Piece
@@ -12,6 +12,17 @@ class Pawn < Piece
     @color == :white ? white_moveset : black_moveset
   end
 
+  # remove vertical moves and return array of threatened positions
+  def threatened_squares
+    moves = []
+    possible_moves.each do |move|
+      next if move.length == 1
+
+      moves.push({ move => @current_square.relative_position(**move) })
+    end
+    moves
+  end
+
   private
 
   def white_moveset
@@ -19,14 +30,14 @@ class Pawn < Piece
       [
         { up: 1 },
         { up: 1, left: 1 },
-        { up: 1, right: 1 },
+        { up: 1, right: 1 }
       ]
     else
       [
         { up: 1 },
         { up: 2 },
         { up: 1, left: 1 },
-        { up: 1, right: 1 },
+        { up: 1, right: 1 }
       ]
     end
   end
@@ -36,14 +47,14 @@ class Pawn < Piece
       [
         { down: 1 },
         { down: 1, left: 1 },
-        { down: 1, right: 1 },
+        { down: 1, right: 1 }
       ]
     else
       [
         { down: 1 },
         { down: 2 },
         { down: 1, left: 1 },
-        { down: 1, right: 1 },
+        { down: 1, right: 1 }
       ]
     end
   end

@@ -23,6 +23,15 @@ class Piece
     end
   end
 
+  # return array of threatened positions
+  def threatened_squares
+    moves = []
+    possible_moves.each do |move|
+      moves.push({ move => @current_square.relative_position(**move) })
+    end
+    moves
+  end
+
   def create_piece(type, color)
     case type
     when :pawn then Pawn.new(color)

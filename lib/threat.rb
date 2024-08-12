@@ -34,7 +34,7 @@ class Threat
     # expects +piece+ to be a Piece object
     blocked_directions = []
     threats = []
-    threatened_squares(piece).map do |movement|
+    piece.threatened_squares.map do |movement|
       square = movement.values.pop
       # skip our own square
       next if square == piece.current_square
@@ -99,28 +99,5 @@ class Threat
       threat_matrix[piece] = get_squares_threatened_by_piece(piece)
     end
     threat_matrix
-  end
-
-  # return array of threatened positions
-  def threatened_squares(piece)
-    return pawn_threats(piece) if piece.pawn? && @attack
-
-    moves = []
-    piece.possible_moves.each do |move|
-      moves.push({ move => piece.current_square.relative_position(**move) })
-    end
-    moves
-  end
-
-  # remove vertical moves and return array of threatened positions
-  def pawn_threats(piece)
-    # code here
-    moves = []
-    piece.possible_moves.each do |move|
-      next if move.length == 1
-
-      moves.push({ move => piece.current_square.relative_position(**move) })
-    end
-    moves
   end
 end
