@@ -21,7 +21,7 @@ class Move
 
   # validate piece movement
   def valid?
-    return false unless piece.has_square_in_possible_moves?(@destination)
+    return false unless piece.square_in_possible_moves?(@destination)
 
     return false unless can_move_to?
 
