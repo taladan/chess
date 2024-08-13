@@ -22,7 +22,7 @@ class Position
 
   # return a symbol of file and rank
   def file_and_rank
-    "#{@file}#{@rank}".to_sym
+    to_sym
   end
 
   # string
