@@ -23,6 +23,10 @@ class Pawn < Piece
     moves
   end
 
+  def icon
+    color == :white ? '♙' : '♟'
+  end
+
   private
 
   def white_moveset

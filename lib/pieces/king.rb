@@ -19,4 +19,8 @@ class King < Piece
     moveset.concat([left: 2], [right: 2]) unless @already_moved
     moveset.flatten
   end
+
+  def icon
+    color == :white ? '♔' : '♚'
+  end
 end
