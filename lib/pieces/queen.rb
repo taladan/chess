@@ -18,4 +18,8 @@ class Queen < Piece
       ]
     end
   end
+
+  def icon
+    color == :white ? '♕' : '♛'
+  end
 end

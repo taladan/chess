@@ -16,4 +16,8 @@ class Knight < Piece
       { down: 2, left: 1 }
     ]
   end
+
+  def icon
+    color == :white ? '♘' : '♞'
+  end
 end
