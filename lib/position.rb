@@ -2,12 +2,10 @@
 
 # Position is responsible for dealing with coordinates
 class Position
-  attr_reader :x, :y, :rank, :file
+  attr_reader :rank, :file
 
   def initialize(square_name)
     @file, @rank = square_name.to_s.downcase.split('', 2)
-    @y = (1..8).to_a.index(@rank.to_i)
-    @x = ('a'..'h').to_a.index(@file)
   end
 
   # iterate through squares and return position object for each
@@ -33,19 +31,7 @@ class Position
   # equivalent positions
   def ==(other)
     self.class == other.class &&
-      @x == other.x &&
-      @y == other.y &&
       to_sym == other.to_sym
-  end
-
-  # xy
-  def xy
-    [x, y]
-  end
-
-  # yx
-  def yx
-    [y, x]
   end
 
   def to_sym
