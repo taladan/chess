@@ -6,15 +6,31 @@ class Display
     @board = board
   end
 
+  # redraw the screen
+  def refresh
+    system('clear') || systemr('cls')
+    puts header
+    puts board_string
+  end
+
   # return a string representation of the complete board with labels
   def board_string
     array = []
-    array << "\n\t\t"
+    array << "\n\t\t\t"
     @board.ranks.keys.reverse_each do |rank|
       array << rank_string_formatter(rank, @board.ranks[rank])
     end
     array << @board.file_labels
     array.join
+  end
+
+  def header
+    "     ██████╗ ██████╗ ██╗███╗   ██╗     ██████╗██╗  ██╗███████╗███████╗███████╗
+    ██╔═══██╗██╔══██╗██║████╗  ██║    ██╔════╝██║  ██║██╔════╝██╔════╝██╔════╝
+    ██║   ██║██║  ██║██║██╔██╗ ██║    ██║     ███████║█████╗  ███████╗███████╗
+    ██║   ██║██║  ██║██║██║╚██╗██║    ██║     ██╔══██║██╔══╝  ╚════██║╚════██║
+    ╚██████╔╝██████╔╝██║██║ ╚████║    ╚██████╗██║  ██║███████╗███████║███████║
+    ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝     ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\n"
   end
 
   private
@@ -34,7 +50,7 @@ class Display
     rank.each do |square|
       output_array << @board.get(square).show[:top]
     end
-    output_array << "\n\t      "
+    output_array << "\n\t\t      "
   end
 
   # return an array of strings that represent the middle row of the rank display with a linebreak appended
@@ -43,7 +59,7 @@ class Display
     rank.each do |square|
       output_array << @board.get(square).show[:middle]
     end
-    output_array << "\n\t\t"
+    output_array << "\n\t\t\t"
   end
 
   # return an array of strings that represent the bottom row of the rank display with a linebreak appended
@@ -52,6 +68,6 @@ class Display
     rank.each do |square|
       output_array << @board.get(square).show[:bottom]
     end
-    output_array << "\n\t\t"
+    output_array << "\n\t\t\t"
   end
 end
