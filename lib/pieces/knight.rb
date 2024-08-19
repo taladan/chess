@@ -9,7 +9,7 @@ class Knight < Piece
       { up: 1, left: 2 },
       { up: 2, right: 1 },
       { up: 1, left: 2 },
-      { up: 2, right: 1 },
+      { up: 2, left: 1 },
       { down: 1, left: 2 },
       { down: 2, right: 1 },
       { down: 1, left: 2 },
@@ -18,6 +18,6 @@ class Knight < Piece
   end
 
   def icon
-    color == :white ? '♘' : '♞'
+    color == :white ? '♘'.cyan : '♞'.light_red
   end
 end

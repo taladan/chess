@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colorize'
+
 # parent class for chess pieces
 class Piece
   attr_reader :color

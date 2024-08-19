@@ -21,6 +21,6 @@ class King < Piece
   end
 
   def icon
-    color == :white ? '♔' : '♚'
+    color == :white ? '♔'.cyan : '♚'.light_red
   end
 end
