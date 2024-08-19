@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colorize'
+
 # Square object
 # - can hold a piece object
 # - has a color attribute
@@ -16,6 +18,15 @@ class Square
     @x = nil
   end
 
+  # Build square display
+  def show
+    pad = '    '
+    mid = occupied? ? " #{piece.icon}  " : pad
+    pad = color == :white ? pad.on_white : pad.on_light_black
+    mid = color == :white ? mid.on_white : mid.on_light_black
+    { top: pad, middle: mid, bottom: pad }
+  end
+
   # populate array with square objects
   def self.initialize_squares
     #  The following rules apply:
@@ -24,12 +35,12 @@ class Square
     #  - rank index odd && file index even - black square.
     #  - rank index odd && file index odd - white  square.
 
-    Array.new(8) do |rank_index|
-      Array.new(8) do |file_index|
-        color = (rank_index + file_index).even? ? :white : :black
+    Array.new(8) do |y_index|
+      Array.new(8) do |x_index|
+        color = (y_index + x_index).even? ? :white : :black
         Square.new(color).tap do |square|
-          square.y = rank_index
-          square.x = file_index
+          square.y = y_index
+          square.x = x_index
         end
       end
     end
@@ -38,5 +49,11 @@ class Square
   # return boolean true if square has a piece in it's current position
   def occupied?
     !@piece.nil?
+  end
+
+  # return array of y/x coords
+  # note: y/x is used in ncurses instead of x/y
+  def yx
+    [@y, @x]
   end
 end
