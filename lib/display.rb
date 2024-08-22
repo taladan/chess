@@ -2,7 +2,12 @@
 
 # Controls the building of the chess display
 class Display
-  def initialize(board)
+  def initialize
+    @board = nil
+  end
+
+  # pass game board into display
+  def initialize_board(board)
     @board = board
   end
 
@@ -11,6 +16,31 @@ class Display
     system('clear') || systemr('cls')
     puts header
     puts board_string
+  end
+
+  # write to screen
+  def write(msg, norefresh: false)
+    clear_and_header unless norefresh
+    if msg.is_a?(Array)
+      array_write(msg)
+    else
+      puts msg
+    end
+  end
+
+  private
+
+  def clear_and_header
+    system('clear') || system('cls')
+    puts header
+    puts "\n\n"
+  end
+
+  # write an array to screen, newline with numbers
+  def array_write(msg_array)
+    msg_array.each_with_index do |element, index|
+      puts "\t#{index + 1}. #{element}\n"
+    end
   end
 
   # return a string representation of the complete board with labels
@@ -24,6 +54,7 @@ class Display
     array.join
   end
 
+  # Ascii header for game
   def header
     "     ██████╗ ██████╗ ██╗███╗   ██╗     ██████╗██╗  ██╗███████╗███████╗███████╗
     ██╔═══██╗██╔══██╗██║████╗  ██║    ██╔════╝██║  ██║██╔════╝██╔════╝██╔════╝
@@ -32,8 +63,6 @@ class Display
     ╚██████╔╝██████╔╝██║██║ ╚████║    ╚██████╗██║  ██║███████╗███████║███████║
     ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝     ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\n"
   end
-
-  private
 
   # This gathers the various strings of the board and returns them as an array
   def rank_string_formatter(label_key, rank)
