@@ -7,25 +7,30 @@ require './lib/player'
 # Game holds the data for an ongoing game of Chess
 class Game
   attr_accessor :board
-  attr_reader :display, :move_list, :player1, :player2, :save_dir
+  attr_reader :display, :move_list, :white, :black, :save_dir, :started, :turn
 
   def initialize
     @board = nil
+    @started = false
     @display = Display.new
-    @player1 = nil
-    @player2 = nil
+    @white = nil
+    @black = nil
     @move_list = []
-    @save_dir = './saves'
   end
 
   # prompt and set player data
   def init_players
     display.write('Enter the name of Player 1')
     name = gets.chomp
-    new_player(name)
+    @white = new_player(name)
     display.write('Enter the name of Player 2')
     name = gets.chomp
-    new_player(name)
+    @black = new_player(name)
+    @turn = @white
+  end
+
+  def start
+    @started = true
   end
 
   # instantiate new board object
@@ -38,15 +43,19 @@ class Game
     @move_list << move
   end
 
+  def move_piece
+    # move logic here
+  end
+
   private
 
   # this may or may not live on.
   # todo: decide if this lives or not
   def new_player(name)
-    if @player1.nil?
-      @player1 = Player.new(name, :white)
-    elsif @player2.nil?
-      @player2 = Player.new(name, :black)
+    if @white.nil?
+      @white = Player.new(name, :white)
+    elsif @black.nil?
+      @black = Player.new(name, :black)
     else
       raise 'Players already set.'
     end
