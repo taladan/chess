@@ -8,7 +8,7 @@ require './lib/scoresheet'
 # Game holds the data for an ongoing game of Chess
 class Game
   attr_accessor :board
-  attr_reader :display, :move_list, :white, :black, :save_dir, :started, :turn
+  attr_reader :display, :move_list, :white, :black, :started, :turn
 
   def initialize
     @board = nil

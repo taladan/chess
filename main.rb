@@ -3,23 +3,25 @@
 require './lib/game'
 require './lib/save'
 require './lib/exceptions'
+require 'fileutils'
 
 # This object initializes a game of chess and contains the main game loop
 class Chess
   def initialize
     @game = Game.new
-    mainloop
-  end
-
-  # Game loop
-  def mainloop
     @game.display.write("Welcome to Odin Chess\n\n")
     @save = Save.new(@game)
+    save_directory
     start_menu
     board = @game.board
     @game.display.initialize_board(board)
     @game.start
+    mainloop
+    # check for a saves directory and create it if it doesn't exist
+  end
 
+  # Game loop
+  def mainloop
     # Pass Board to display
     keep_running = true
 
@@ -47,6 +49,10 @@ class Chess
   end
 
   private
+
+  def save_directory
+    FileUtils.mkdir_p @save.directory unless File.directory?(@save.directory)
+  end
 
   # menu for gameplay
   def ingame_menu

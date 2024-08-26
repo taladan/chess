@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Save
+  attr_reader :directory
+
   def initialize(game)
     @game = game
-    @save_dir = './saves'
+    @directory = './saves'
   end
 
   # save the current board state
@@ -11,7 +13,7 @@ class Save
   # TODO: need to put in a filename check for games
   def game
     # name the file
-    filename = "#{@save_dir}/#{@game.white.name}_vs_#{@game.black.name}.chess"
+    filename = "#{@directory}/#{@game.white.name}_vs_#{@game.black.name}.chess"
 
     # Test for file existance
     # @game.display.write('Game file exists, overwrite?', norefresh: true) if File.file?(filename)
@@ -21,11 +23,11 @@ class Save
     @game.display.write("Game Saved as #{File.basename(filename)}", norefresh: true)
   end
 
-  # return array of filenames and an array of paths in the @game_save directory
+  # return array of filenames and an array of paths in the save directory
   def list
     filenames = []
     paths = []
-    Dir.glob("#{@save_dir}/*.chess").each do |file|
+    Dir.glob("#{@directory}/*.chess").each do |file|
       paths << file
       filenames << File.basename(file, '.*')
     end
