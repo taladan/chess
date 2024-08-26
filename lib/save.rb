@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'date'
+
+# This object handles loading and saving of chess games
 class Save
   attr_reader :directory
 
@@ -13,10 +16,7 @@ class Save
   # TODO: need to put in a filename check for games
   def game
     # name the file
-    filename = "#{@directory}/#{@game.white.name}_vs_#{@game.black.name}.chess"
-
-    # Test for file existance
-    # @game.display.write('Game file exists, overwrite?', norefresh: true) if File.file?(filename)
+    filename = "#{@directory}/#{@game.white.name}_vs_#{@game.black.name}-#{Date.today}.chess"
 
     # Marhsal and write the file to the directory
     File.open(filename, 'wb') { |file| file.write(Marshal.dump(@game)) }
@@ -35,8 +35,8 @@ class Save
   end
 
   # list and loads game files
-  # TODO: Nail logic down
   def load
+    # An array of prettified file names and an array of actual file paths
     filenames, saves = list
     @game.display.write(filenames)
     choice = choose_save(saves)
@@ -46,7 +46,7 @@ class Save
 
   private
 
-  # Allow player to choose from saved games
+  # Allow player to choose from saved games returns an integer
   def choose_save(saves)
     prompt = "Please enter a number 1-#{saves.length}"
     @game.display.write(prompt, norefresh: true)
