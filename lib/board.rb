@@ -80,9 +80,9 @@ class Board
     move = Move.new(self, moving_piece, target)
 
     if !moving_piece.is_a?(Knight)
-      return false unless move.valid? && path_clear?(move)
+      raise InvalidMove, 'That is not a valid move' unless move.valid? && path_clear?(move)
     else
-      return false unless move.valid?
+      raise InvalidMove, 'That is not a valid move' unless move.valid?
     end
 
     # check for en passant

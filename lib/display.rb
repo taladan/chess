@@ -16,6 +16,7 @@ class Display
     system('clear') || systemr('cls')
     puts header
     puts board_string
+    puts "\n\n"
   end
 
   # write to screen

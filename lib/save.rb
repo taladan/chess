@@ -13,9 +13,12 @@ class Save
     # name the file
     filename = "#{@save_dir}/#{@game.white.name}_vs_#{@game.black.name}.chess"
 
+    # Test for file existance
+    # @game.display.write('Game file exists, overwrite?', norefresh: true) if File.file?(filename)
+
     # Marhsal and write the file to the directory
     File.open(filename, 'wb') { |file| file.write(Marshal.dump(@game)) }
-    @game.display.write('Game Saved as File.basename(filename)')
+    @game.display.write("Game Saved as #{File.basename(filename)}", norefresh: true)
   end
 
   # return array of filenames and an array of paths in the @game_save directory

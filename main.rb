@@ -2,19 +2,14 @@
 
 require './lib/game'
 require './lib/save'
+require './lib/exceptions'
 
-###########
-# Most of the stuff besides the mainloop is
-# likely going to be pulled out of here and
-# parted up into other objects/logic
-###########
+# This object initializes a game of chess and contains the main game loop
 class Chess
   def initialize
     @game = Game.new
     mainloop
   end
-
-  # instantiate game object
 
   # Game loop
   def mainloop
@@ -38,7 +33,7 @@ class Chess
   # menu of choices to initialize game
   def start_menu
     input = ''
-    puts('(N)ew Game, (L)oad Game, or (Q)uit?')
+    @game.display.write('(N)ew Game, (L)oad Game, or (Q)uit?', norefresh: true)
     input = gets.chomp.upcase until %w[N L Q].include?(input)
     case input
     when 'N'
@@ -51,20 +46,41 @@ class Chess
     end
   end
 
+  private
+
   # menu for gameplay
   def ingame_menu
     options = '(M)ove a piece, (S)ave this game, (Q)uit'
     @game.display.write(options, norefresh: true)
     @game.display.write("#{@game.turn.name}'s move\n", norefresh: true)
-    input = gets.chomp.upcase until %w[M S Q].include?(input)
+    input = gets.chomp.upcase
+    until %w[M S Q].include?(input)
+      @game.display.refresh
+      @game.display.write('Invalid Choice.', norefresh: true)
+      @game.display.write(options, norefresh: true)
+      @game.display.write("#{@game.turn.name}'s move\n", norefresh: true)
+      input = gets.chomp.upcase
+    end
     input
   end
 
   # execute menu choices
   def parse_input(choice)
-    @game.move_piece if choice == 'M'
+    begin
+      @game.player_move if choice == 'M'
+    rescue InvalidMove => e
+      @game.display.write(e, norefresh: true)
+      sleep(3)
+      @game.display.refresh
+    end
     exit! if choice == 'Q'
-    @save.game if choice == 'S'
+    save if choice == 'S'
+  end
+
+  def save
+    @save.game
+    sleep(1)
+    @game.display.refresh
   end
 end
 
