@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry-byebug'
-
 require_relative 'square'
 require_relative 'position'
 require_relative './pieces/pawn'
