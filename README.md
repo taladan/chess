@@ -1,6 +1,6 @@
 # chess
 
-![[screenshot.png]]
+![screenshot.png](./screenshot.png)
 The game of Kings, at the commandline.
 
 ## Project Info
