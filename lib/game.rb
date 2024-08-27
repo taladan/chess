@@ -20,12 +20,17 @@ class Game
     @black = nil
   end
 
+  # check for check
+  def check?
+    Checkmate.new(@board).check?
+  end
+
   # check for mate
   def checkmate?
     Checkmate.new(@board).checkmate?
   end
 
-  def check_mated_color
+  def checked_color
     Checkmate.new(@board).kings_in_check.pop.color
   end
 
@@ -55,6 +60,12 @@ class Game
     return if en_passant_check
 
     @display.refresh
+
+    if check?
+      player = @white.color == checked_color ? @white.name : @black.name
+      @display.write("\n#{player} is in check!", norefresh: true)
+    end
+
     @display.write("Enter your move (it should follow the format: 'a2,a4'): ", norefresh: true)
     input = gets.chomp
     until verified?(input)
@@ -68,7 +79,6 @@ class Game
     source, target = input.split(',').map(&:to_sym)
 
     # white should only be able to move white pieces
-    # TODO: Finish this logic
     piece = @board.get_piece(source)
     raise InvalidMove, 'You can not move a piece belonging to an opponent' if piece.color != @turn.color
 

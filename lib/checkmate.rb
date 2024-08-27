@@ -37,6 +37,7 @@ class Checkmate < Check
   def play(board_object, origin, square)
     return unless board_object.on_board?(square)
 
+    # We don't care about invalid moves in testing for checkmate
     begin
       board_object.move_piece(origin, square)
     rescue InvalidMove => e

@@ -97,7 +97,7 @@ end
 
 # This terminates the game loop
 def end_game
-  winner = @game.white.color == @game.check_mated_color ? @game.black : @game.white
+  winner = @game.white.color == @game.checked_color ? @game.black : @game.white
   @game.display.refresh
   @game.display.write("#{winner.name} wins!  Congratulations on a well fought victory!")
   sleep(3)
