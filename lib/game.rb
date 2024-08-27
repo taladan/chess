@@ -3,6 +3,7 @@
 require './lib/board'
 require './lib/display'
 require './lib/player'
+require './lib/checkmate'
 require './lib/scoresheet'
 
 # Game holds the data for an ongoing game of Chess
@@ -17,6 +18,15 @@ class Game
     @scoresheet = Scoresheet.new
     @white = nil
     @black = nil
+  end
+
+  # check for mate
+  def checkmate?
+    Checkmate.new(@board).checkmate?
+  end
+
+  def check_mated_color
+    Checkmate.new(@board).kings_in_check.pop.color
   end
 
   # prompt and set player data
@@ -116,11 +126,6 @@ class Game
         swap_turn
       end
     end
-  end
-
-  # add move to list
-  def update_movelist(move)
-    @move_list << move
   end
 
   # regex match input against the pattern a1 - ah for the source and target

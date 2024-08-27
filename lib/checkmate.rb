@@ -1,6 +1,6 @@
 # frozen_string_literal: true require 'check'
 
-require 'check'
+require_relative 'check'
 
 class Checkmate < Check
   # return boolean - test all possible moves to see if check can be resolved
@@ -37,6 +37,9 @@ class Checkmate < Check
   def play(board_object, origin, square)
     return unless board_object.on_board?(square)
 
-    board_object.move_piece(origin, square)
+    begin
+      board_object.move_piece(origin, square)
+    rescue InvalidMove => e
+    end
   end
 end

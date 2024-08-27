@@ -27,8 +27,13 @@ class Chess
 
     # Main loop
     while keep_running
-      @game.display.refresh
-      parse_input(ingame_menu)
+      keep_running = false if @game.checkmate?
+      if @game.checkmate?
+        end_game
+      else
+        @game.display.refresh
+        parse_input(ingame_menu)
+      end
     end
   end
 
@@ -88,6 +93,15 @@ class Chess
     sleep(1)
     @game.display.refresh
   end
+end
+
+# This terminates the game loop
+def end_game
+  winner = @game.white.color == @game.check_mated_color ? @game.black : @game.white
+  @game.display.refresh
+  @game.display.write("#{winner.name} wins!  Congratulations on a well fought victory!")
+  sleep(3)
+  exit!
 end
 
 Chess.new if __FILE__ == $0
