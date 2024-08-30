@@ -29,7 +29,11 @@ _August 30, 2024_
 
 I have save management in and functional. You can delete save files and rename them. The string strips on input from the player, and it automatically appends the `.chess` file extension. In this case, `.chess` is just a marshalled dump of the Game object. This may not be the most secure way of saving/loading games, but it's within the spec of the Assignment, and I feel good about being able to implement it. If you inspect this code and see any issues or bugs with it, I ask that you submit an issue with the details on it - it can't hurt for me to be able to use this as a perpetual learning process. Who knows, maybe it will be an interesting on-going problem to play with.
 
+<<<<<<< HEAD
 I have decided that, barring some help from the fine people at #ruby-help in [TOP Discord](https://discord.gg/theodinproject) tracking down the issue with the lag, I'm going to move on from it in the curriculum. This may be just a one and done learning problem, and it has taught me a great deal about code in general and about OOP in a way that I've never thought about. To other TOP rubyists who may find this along the path of your journey in an effort to understand this particular problem set I would like to encourage you to stick with it. I am mentally exhausted from doing this project. It has taken everything I know about code up to this point to get to the end of it - at least good enough for an ending anyways.
+=======
+I have decided that I am, barring some help from the fine people at #ruby-help in [TOP Discord](https://discord.gg/theodinproject) tracking down the issue with the lag, I'm going to move on from it in the curriculum. This may be just a one and done learning problem, and it has taught me a great deal about code in general and about OOP in a way that I've never thought about. To other TOP rubyists who may find this along the path of your journey in an effort to understand this particular problem set I would like to encourage you to stick with it. I am mentally exhausted from doing this project. It has taken everything I know about code up to this point to get to the end of it - at least good enough for an ending anyways.
+>>>>>>> 9cebc2452ec33fef2acf6aaf863a0f97bfd19531
 
 ### Advice for people attempting this problem
 
@@ -54,6 +58,7 @@ I have spent over a year and a half on this project (mostly off due to burn out 
 What else is there to say? I will likely come to terms with it not being perfect. Afterall, perfect is the enemy of done, and comparison the theif of joy. If you have questions, ask 'em and I'll try and answer them as best I can - I make no promises, I will likely have to dig through it to understand what in the world I was thinking if you ask me about it. That's okay, come ping me on discord if you have a Q about this.
 
 I hope you enjoy!
+<<<<<<< HEAD
 
 <br\>
 <br\>
@@ -122,6 +127,45 @@ I hope you enjoy!
 <br\>
 <br\>
 <br\>
+=======
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+>>>>>>> 9cebc2452ec33fef2acf6aaf863a0f97bfd19531
 
 #### What are you still doing here?
 
