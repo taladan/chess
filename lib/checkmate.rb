@@ -11,21 +11,16 @@ class Checkmate < Check
     output = true
     kings_in_check.each do |king|
       @board.find_pieces_by_color(king.color).each do |piece|
-        next if output == false
-
         origin = piece.current_square.to_sym
         piece.threatened_squares.each do |move|
           move.values.each do |value|
-            next if output == false
-
             working_board = deep_copy_board
             play(working_board, origin, value)
-            output = Check.new(working_board).check?
+            return false unless Check.new(working_board).check?
           end
         end
       end
     end
-    output
   end
 
   # return an identical deep copy of board object for move testing
