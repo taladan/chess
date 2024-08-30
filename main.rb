@@ -12,7 +12,7 @@ class Chess
     @game.display.write("Welcome to Odin Chess\n\n")
     @save = Save.new(@game)
     save_directory
-    start_menu
+    start_menu while @game.board.nil?
     board = @game.board
     @game.display.initialize_board(board)
     @game.start
@@ -40,14 +40,17 @@ class Chess
   # menu of choices to initialize game
   def start_menu
     input = ''
-    @game.display.write('(N)ew Game, (L)oad Game, or (Q)uit?', norefresh: true)
-    input = gets.chomp.upcase until %w[N L Q].include?(input)
+    @game.display.write('(N)ew Game, (L)oad Game, (M)anage saves, or (Q)uit?', norefresh: true)
+    input = gets.chomp.upcase until %w[L M N Q].include?(input)
     case input
     when 'N'
       @game.new_board
       @game.init_players
     when 'L'
       @game = @save.load
+    when 'M'
+      @save.manage
+      @game.board = nil
     when 'Q'
       exit!
     end

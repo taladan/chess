@@ -44,7 +44,62 @@ class Save
     @game
   end
 
+  # manage save files
+  def manage
+    @game.display.write('(D)elete or (R)ename save?')
+    input = gets.chomp.upcase
+    until %w[D R].include?(input)
+      @game.display.write("Invalid choice, please enter 'D' for delete or 'R' for rename.")
+      input = gets.chomp.upcase
+    end
+
+    case input
+    when 'D'
+      delete
+    when 'R'
+      rename
+    end
+  end
+
   private
+
+  # step through deleting a save
+  def delete
+    filenames, saves = list
+    @game.display.write(filenames)
+    choice = choose_save(saves)
+    @game.display.write("You have chosen to delete #{filenames[choice]}.  This cannot be undone, are you sure? (Y/N)",
+                        norefresh: true)
+    del = gets.chomp.upcase
+    until %w[Y N].include?(del)
+      @game.display.write("Invalid choice, please type 'Y' or 'N'", norefresh: true)
+      @game.display.write(
+        "You have chosen to delete #{filenames[choice]}.  This cannot be undone, are you sure? (Y/N)", norefresh: true
+      )
+      del = gets.chomp.upcase
+    end
+    if del == 'Y'
+      File.delete(saves[choice]) if File.exist?(saves[choice])
+    else
+      @game.display.write('Aborting save management.')
+      @game.board = nil
+    end
+  end
+
+  # Rename a file
+  def rename
+    filenames, saves = list
+    @game.display.write(filenames)
+    choice = choose_save(saves)
+    @game.display.write("Please enter a new name for the file #{filenames[choice]}", norefresh: true)
+    ren = gets.chomp
+
+    # exit method without renaming if no name given
+    return @game.board = nil if ren == ''
+
+    File.rename(saves[choice], @directory + '/' + ren.strip + File.extname(saves[choice]))
+    @game.board = nil
+  end
 
   # Allow player to choose from saved games returns an integer
   def choose_save(saves)
