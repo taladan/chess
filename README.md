@@ -11,9 +11,7 @@ This is a project assignment for [The Odin Project](https://theodinproject.com)
 
 ## Needed gem
 
-To play this game, you will need to install the 'colorize' gem
-
-`gem install colorize`
+I have used bundler to add the required gem...this is my first time using this, so if it doesn't work, ping me here or on discord and I'll take a look at it - you should not have to install colorize on your own. If for some reason bundler didn't work, you should still be able to use `gem install colorize` to get things working.
 
 ## Caveats
 
