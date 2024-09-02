@@ -8,17 +8,18 @@ class Check
   def initialize(board)
     @board = board
     find_kings
+    @threats = Threat.new(@board).all_threats.values.flatten
   end
 
   # return boolean true if either king is currently in check
   def check?
-    threats.include?(@white_king.current_square) || threats.include?(@black_king.current_square)
+    @threats.include?(@white_king.current_square) || @threats.include?(@black_king.current_square)
   end
 
   # return array of all kings currently in check
   def kings_in_check
     [@white_king, @black_king].select do |king|
-      threats.include?(king.current_square)
+      @threats.include?(king.current_square)
     end
   end
 
@@ -31,10 +32,5 @@ class Check
         square.piece.color == :white ? @white_king = square.piece : @black_king = square.piece
       end
     end
-  end
-
-  # Return flat array of all threatened positions
-  def threats
-    Threat.new(@board).all_threats.values.flatten
   end
 end

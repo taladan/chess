@@ -64,6 +64,6 @@ class Position
     end
 
     # return a new position object of the calculated position
-    Position.new((target_file + target_rank.to_s).to_sym)
+    Position.new("#{target_file}#{target_rank}".to_sym)
   end
 end

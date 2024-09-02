@@ -55,14 +55,15 @@ class Board
     square_name = square_name.to_sym if square_name.instance_of?(Position)
     file_letter, rank_number = square_name.to_s.downcase.chars
     rank_index = rank_number.to_i - 1
-    file_index = ('a'..'h').to_a.reverse.index(file_letter)
+    file_index = %w[h g f e d c b a].index(file_letter)
     @squares[file_index][rank_index]
   end
 
   # Return a piece object at a given location
   def get_piece(square_name)
+    square = get(square_name)
     # expects +square_name+ = Position obj, string, or symbol (:a1..:h8)
-    get(square_name).occupied? ? get(square_name).piece : nil
+    square.occupied? ? square.piece : nil
   end
 
   # move piece from square to square
@@ -105,9 +106,9 @@ class Board
   def on_board?(position)
     # expects +position+ to be String, Symbol, or Position
     square_names_on_board = []
-    ('a'..'h').to_a.each do |file|
-      (1..8).to_a.each do |rank|
-        square_names_on_board.push((file + rank.to_s).to_sym)
+    %w[a b c d e f g h].each do |file|
+      %w[1 2 3 4 5 6 7 8].each do |rank|
+        square_names_on_board.push("#{file}#{rank}".to_sym)
       end
     end
 
