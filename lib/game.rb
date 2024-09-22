@@ -83,7 +83,7 @@ class Game
     raise InvalidMove, 'You can not move a piece belonging to an opponent' if piece.color != @turn.color
 
     # some sort of validation is going to have to happen here
-    move = @board.move_piece(source, target)
+    @board.move_piece(source, target)
     swap_turn
 
     # update scoresheet
@@ -114,7 +114,7 @@ class Game
     end
     case input
     when 'N'
-      false
+      @board.reset_enpassant
     when 'Y'
       if @board.en_passant.threat.length == 2
         choices = @board.en_passant.threat.map { |piece| piece.current_square.to_s }
@@ -128,11 +128,13 @@ class Game
         _captured_piece = @board.remove_piece_from!(@board.en_passant.square)
         capturing_piece = @board.remove_piece_from!(input)
         @board.put(capturing_piece, @board.en_passant.opponent_target_square)
+        @board.reset_enpassant
         swap_turn
       else
         _captured_piece = @board.remove_piece_from!(@board.en_passant.square)
         capturing_piece = @board.remove_piece_from!(@board.en_passant.threat[0].current_square.to_sym)
         @board.put(capturing_piece, @board.en_passant.opponent_target_square)
+        @board.reset_enpassant
         swap_turn
       end
     end

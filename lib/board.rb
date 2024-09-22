@@ -2,12 +2,12 @@
 
 require_relative 'square'
 require_relative 'position'
-require_relative './pieces/pawn'
-require_relative './pieces/rook'
-require_relative './pieces/knight'
-require_relative './pieces/bishop'
-require_relative './pieces/queen'
-require_relative './pieces/king'
+require_relative 'pieces/pawn'
+require_relative 'pieces/rook'
+require_relative 'pieces/knight'
+require_relative 'pieces/bishop'
+require_relative 'pieces/queen'
+require_relative 'pieces/king'
 require_relative 'move'
 
 # This class represents a Chess Board
@@ -78,10 +78,10 @@ class Board
     # set up move for testing validity
     move = Move.new(self, moving_piece, target)
 
-    if !moving_piece.is_a?(Knight)
-      raise InvalidMove, 'That is not a valid move' unless move.valid? && path_clear?(move)
-    else
+    if moving_piece.is_a?(Knight)
       raise InvalidMove, 'That is not a valid move' unless move.valid?
+    else
+      raise InvalidMove, 'That is not a valid move' unless move.valid? && path_clear?(move)
     end
 
     # check for en passant
@@ -108,7 +108,7 @@ class Board
     square_names_on_board = []
     %w[a b c d e f g h].each do |file|
       %w[1 2 3 4 5 6 7 8].each do |rank|
-        square_names_on_board.push("#{file}#{rank}".to_sym)
+        square_names_on_board.push(:"#{file}#{rank}")
       end
     end
 
@@ -147,6 +147,11 @@ class Board
     piece
   end
 
+  # reset en_passant status so it doesn't carry over
+  def reset_enpassant
+    @en_passant = false
+  end
+
   private
 
   # return an array of positions
@@ -160,6 +165,6 @@ class Board
       dir.each_key { |key| tmp_directions[key] = n + 1 }
       path.push(move_object.origin.relative_position(**tmp_directions))
     end
-    path.map { |position| position unless position == move_object.destination }.compact
+    path.reject { |position| position == move_object.destination }
   end
 end
